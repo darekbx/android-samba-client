@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/authentication_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/authentication_logo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/auth_status_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/logo_text"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:background="@drawable/ic_cloud_circle"
+        android:textColor="?colorPrimary"
+        android:backgroundTint="?colorPrimary"
+        />
+
+    <TextView
+        android:id="@+id/auth_status_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/authentication_logo"
+        app:layout_constraintBottom_toTopOf="@id/authentication_address"
+        android:layout_marginEnd="@dimen/bigPadding"
+        android:layout_marginStart="@dimen/bigPadding"
+        android:layout_marginBottom="@dimen/smallPadding"
+        app:drawableLeftCompat="@drawable/ic_error"
+        android:drawablePadding="@dimen/smallPadding"
+        android:gravity="center_vertical"
+        android:visibility="invisible"
+        />
+
+    <TextView
+        android:id="@+id/share_name_status_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/authentication_logo"
+        app:layout_constraintBottom_toTopOf="@id/authentication_share_name"
+        android:layout_marginEnd="@dimen/bigPadding"
+        android:layout_marginStart="@dimen/bigPadding"
+        android:layout_marginBottom="@dimen/smallPadding"
+        app:drawableLeftCompat="@drawable/ic_success"
+        android:drawablePadding="@dimen/smallPadding"
+        android:gravity="center_vertical"
+        android:visibility="invisible"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/authentication_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintTop_toBottomOf="@id/auth_status_view"
+        app:layout_constraintBottom_toTopOf="@id/authentication_user"
+        app:layout_constraintStart_toStartOf="@id/size_keeper"
+        app:layout_constraintEnd_toEndOf="@id/size_keeper">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_address"
+            android:nextFocusDown="@id/authentication_user"
+            android:inputType="text"
+            android:imeOptions="actionNext"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/authentication_user"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintTop_toBottomOf="@id/authentication_address"
+        app:layout_constraintBottom_toTopOf="@id/authentication_password"
+        app:layout_constraintStart_toStartOf="@id/size_keeper"
+        app:layout_constraintEnd_toEndOf="@id/size_keeper"
+        app:layout_constraintStart_toEndOf="parent"
+        android:layout_marginTop="@dimen/mediumPadding">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_user"
+            android:nextFocusDown="@id/authentication_password"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/authentication_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@id/size_keeper"
+        app:layout_constraintEnd_toEndOf="@id/size_keeper"
+        app:layout_constraintTop_toBottomOf="@id/authentication_user"
+        app:layout_constraintBottom_toTopOf="@id/authenticate_button"
+        android:layout_marginTop="@dimen/mediumPadding">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_password"
+            android:nextFocusDown="@id/authenticate_button"
+            android:imeOptions="actionSend"
+            android:inputType="textPassword"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/remember_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintTop_toBottomOf="@id/authentication_password"
+        app:layout_constraintStart_toStartOf="@id/authentication_password"
+        android:text="@string/remember_address_and_user"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/authentication_share_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintTop_toBottomOf="@id/auth_status_view"
+        app:layout_constraintEnd_toStartOf="parent"
+        android:layout_marginTop="@dimen/smallPadding">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_share_name"
+            android:nextFocusDown="@id/authenticate_button"
+            android:imeOptions="actionSend"
+            android:inputType="text"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <View
+        android:id="@+id/size_keeper"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginEnd="@dimen/bigPadding"
+        android:layout_marginStart="@dimen/bigPadding"
+        />
+
+    <Button
+        android:id="@+id/authenticate_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintTop_toBottomOf="@id/remember_check_box"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/largePadding"
+        android:layout_marginBottom="@dimen/mediumPadding"
+        android:text="@string/authenticate_button"
+        />
+
+    <include
+        android:id="@+id/loading_layout"
+        layout="@layout/layout_progress" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

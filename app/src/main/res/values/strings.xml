@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Samba Client</string>
+    <string name="logo_text">smb</string>
+
+    <string name="authenticate_button">Authenticate</string>
+
+    <string name="hint_address">Samba address</string>
+    <string name="hint_user">User</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_domain">Domain</string>
+    <string name="hint_share_name">Share name</string>
+
+    <string name="validation_address">Address is required</string>
+    <string name="validation_share_name">Share name</string>
+
+    <string name="authentication_success">Authenticated!</string>
+    <string name="button_use_share">Use share name</string>
+    <string name="remember_address_and_user">Remember address and user</string>
+
+</resources>
