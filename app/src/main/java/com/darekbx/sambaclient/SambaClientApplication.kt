@@ -3,6 +3,7 @@ package com.darekbx.sambaclient
 import android.app.Application
 import android.content.Context
 import com.darekbx.sambaclient.preferences.AuthPreferences
+import com.darekbx.sambaclient.ui.samba.PathMovement
 import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
 import com.hierynomus.smbj.SMBClient
@@ -18,6 +19,7 @@ class SambaClientApplication : Application() {
         single { SMBClient() }
         single { SambaClientWrapper(get()) }
         single { AuthPreferences(get()) }
+        single { PathMovement() }
         single {
             (get() as Context).getSharedPreferences(
                 "SambaClientApplication_preferences",

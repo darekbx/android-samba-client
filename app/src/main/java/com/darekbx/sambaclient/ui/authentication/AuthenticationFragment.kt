@@ -93,6 +93,7 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
         if (result.hasError) {
             displaySetShareNameError(result.exception!!)
         } else {
+            rememberShareName()
             findNavController().navigate(R.id.action_authenticationFragment_to_fileExplorerFragment)
         }
     }
@@ -104,6 +105,8 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
             authenticated = true
             binding.shareNameStatusView.visibility = View.VISIBLE
             binding.shareNameStatusView.setText(R.string.authentication_success)
+
+            fillRememberedShareName()
             animateDiskShare()
             rememberAddressAndUser()
         }
@@ -116,7 +119,18 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
                 val user = authenticationUser.getSimpleText()
                 authPreferences.persist(address, user)
             } else {
-                authPreferences.clear()
+                authPreferences.clearAddressAndUser()
+            }
+        }
+    }
+
+    private fun rememberShareName() {
+        with(binding) {
+            if (rememberShareCheckBox.isChecked) {
+                val shareName = authenticationShareName.getSimpleText()
+                authPreferences.persist(shareName)
+            } else {
+                authPreferences.clearShareName()
             }
         }
     }
@@ -128,6 +142,20 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
                 authenticationAddress.editText?.setText(credentials.address)
                 authenticationUser.editText?.setText(credentials.user)
                 rememberCheckBox.isChecked = true
+            }
+        }
+    }
+
+    private fun fillRememberedShareName() {
+        val shareName = authPreferences.readShareName()
+        if (shareName != null && shareName.isNotBlank()) {
+            with(binding) {
+                authenticationShareName.editText?.setText(shareName)
+                rememberShareCheckBox.postDelayed(
+                    { rememberShareCheckBox.isChecked = true },
+                    /* Wait till auth animation is completed, if value is set before, then checkbox is not being checked */
+                    ANIMATION_DURATION * 2
+                )
             }
         }
     }

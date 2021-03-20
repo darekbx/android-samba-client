@@ -16,5 +16,18 @@
     <string name="authentication_success">Authenticated!</string>
     <string name="button_use_share">Use share name</string>
     <string name="remember_address_and_user">Remember address and user</string>
+    <string name="remember_share_name">Remember share name</string>
+
+    <string name="menu_sort_options">Sort options</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_maintenance">Maintenance</string>
+
+    <string name="sort_confirm">Confirm</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_file_name">By name</string>
+    <string name="sort_modifed_time">By modified time</string>
+    <string name="sort_order">Order by</string>
+    <string name="sort_asc">Ascending</string>
+    <string name="sort_desc">Descending</string>
 
 </resources>

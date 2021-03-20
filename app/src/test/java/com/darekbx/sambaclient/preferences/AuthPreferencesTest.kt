@@ -42,7 +42,7 @@ class AuthPreferencesTest {
         assertTrue(credentials.arePersisted)
 
         // When
-        authPreferences.clear()
+        authPreferences.clearAddressAndUser()
 
         // Then
         val clearedCredentials = authPreferences.read()

@@ -14,7 +14,7 @@ class SambaClientWrapper(private val smbClient: SMBClient) {
 
     fun authenticate(server: String, user: String? = null, password: String? = null) {
         val connection = smbClient.connect(server)
-        var authenticationContext = createAuthContext(user, password)
+        val authenticationContext = createAuthContext(user, password)
         _session = connection.authenticate(authenticationContext)
     }
 

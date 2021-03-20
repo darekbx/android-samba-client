@@ -7,7 +7,7 @@ import com.darekbx.sambaclient.R
  * TODO:
  *  - view type:
  *    - list
- *    - grid
+ *    - grid + columns count
  *
  *
  */

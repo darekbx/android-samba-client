@@ -1,6 +1,7 @@
 package com.darekbx.sambaclient.ui.viewmodel
 
 import androidx.lifecycle.*
+import com.darekbx.sambaclient.ui.explorer.SortingInfo
 import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
 import com.darekbx.sambaclient.ui.samba.SambaFile
 import kotlinx.coroutines.CoroutineScope
@@ -20,12 +21,6 @@ class SambaViewModel(
     val diskShareResult = MutableLiveData<ResultWrapper<Boolean>>()
     val listResult = MutableLiveData<ResultWrapper<List<SambaFile>>>()
     val isLoading = MutableLiveData<Boolean>()
-
-    fun dispose() {
-        runIOInViewModelScope {
-            sambaClientWrapper.close()
-        }
-    }
 
     fun authenticate(server: String, user: String? = null, password: String? = null) {
         isLoading.postValue(true)
@@ -53,14 +48,39 @@ class SambaViewModel(
         }
     }
 
-    fun listDirectory(directory: String = "") {
+    fun listDirectory(sortingInfo: SortingInfo, directory: String = "") {
         runIOInViewModelScope {
             try {
                 val list = sambaClientWrapper.list(directory)
-                listResult.postValue(ResultWrapper(list))
+                var comparator = createComparator(sortingInfo)
+                val sortedList = list.sortedWith(comparator)
+                listResult.postValue(ResultWrapper(sortedList))
             } catch (e: Exception) {
                 listResult.postValue(ResultWrapper(emptyList(), e))
             }
+        }
+    }
+
+    private fun createComparator(sortingInfo: SortingInfo): Comparator<SambaFile> {
+        return compareByDescending<SambaFile> { it.isUpMark }
+            .thenByDescending { it.isDirectory }
+            .run {
+                when (sortingInfo.isByName) {
+                    true -> when (sortingInfo.isAscending) {
+                        true -> thenBy { it.name.toLowerCase() }
+                        else -> thenByDescending { it.name.toLowerCase() }
+                    }
+                    else -> when (sortingInfo.isAscending) {
+                        true -> thenBy { it.changeTime }
+                        else -> thenByDescending { it.changeTime }
+                    }
+                }
+            }
+    }
+
+    private fun dispose() {
+        runIOInViewModelScope {
+            sambaClientWrapper.close()
         }
     }
 
@@ -76,33 +96,4 @@ class SambaViewModel(
         super.onCleared()
         dispose()
     }
-
-    /*fun test() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val smbClient = SMBClient()
-                val connection = smbClient.connect("192.168.0.27")
-
-                val session = connection.authenticate(
-                    AuthenticationContext(
-                        "samba",
-                        "****".toCharArray(),
-                        null
-                    )
-                )
-
-                val share = session.connectShare("timemachine")
-                val diskShare = share as DiskShare
-                diskShare.list("laptopy").forEach {
-                    Log.v("--------", it.fileName)
-                }
-
-                session.close()
-                connection.close()
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }*/
 }
