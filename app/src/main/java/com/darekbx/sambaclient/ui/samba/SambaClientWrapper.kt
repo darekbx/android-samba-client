@@ -1,9 +1,11 @@
 package com.darekbx.sambaclient.ui.samba
 
 import com.hierynomus.msdtyp.AccessMask
+import com.hierynomus.msfscc.FileAttributes
 import com.hierynomus.msfscc.fileinformation.FileAllInformation
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation
 import com.hierynomus.mssmb2.SMB2CreateDisposition
+import com.hierynomus.mssmb2.SMB2CreateOptions
 import com.hierynomus.mssmb2.SMB2ShareAccess
 import com.hierynomus.smbj.SMBClient
 import com.hierynomus.smbj.auth.AuthenticationContext
@@ -64,6 +66,22 @@ class SambaClientWrapper(private val smbClient: SMBClient) {
 
     fun fileDelete(path: String) {
         _diskShare?.rm(path)
+    }
+
+    fun createDirectory(path: String, newDirectoryName: String) {
+        val newDirPath =
+            if (path.isEmpty()) newDirectoryName
+            else path + PATH_DELIMITER + newDirectoryName
+        _diskShare
+            ?.openDirectory(
+                newDirPath,
+                setOf(AccessMask.FILE_LIST_DIRECTORY, AccessMask.FILE_ADD_SUBDIRECTORY),
+                setOf(FileAttributes.FILE_ATTRIBUTE_DIRECTORY),
+                SMB2ShareAccess.ALL,
+                SMB2CreateDisposition.FILE_CREATE,
+                setOf(SMB2CreateOptions.FILE_DIRECTORY_FILE)
+            )
+            ?.close()
     }
 
     private fun FileIdBothDirectoryInformation.toSambaFile(): SambaFile {

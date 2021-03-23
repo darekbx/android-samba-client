@@ -21,11 +21,6 @@ import com.darekbx.sambaclient.util.setFileSize
 import com.darekbx.sambaclient.util.setImage
 import org.koin.android.viewmodel.ext.android.viewModel
 
-/**
- * - actions:
- *   - open with intent
- *   - share
- */
 class FileFragment : Fragment(R.layout.fragment_file) {
 
     private val sambaViewModel: SambaViewModel by viewModel()

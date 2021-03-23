@@ -1,8 +1,10 @@
 package com.darekbx.sambaclient.ui.viewmodel
 
 import android.content.ContentResolver
+import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 import androidx.core.content.contentValuesOf
 import androidx.lifecycle.*
 import com.darekbx.sambaclient.ui.explorer.SortingInfo
@@ -13,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.IllegalStateException
+import java.util.*
 import kotlin.Comparator
 
 class SambaViewModel(
@@ -34,6 +37,7 @@ class SambaViewModel(
     val fileInfoResult = MutableLiveData<ResultWrapper<SambaFile>>()
     val fileDownloadResult = MutableLiveData<ResultWrapper<String>>()
     val fileDeleteResult = MutableLiveData<ResultWrapper<Boolean>>()
+    val directoryCreateResult = MutableLiveData<ResultWrapper<Boolean>>()
     val isLoading = MutableLiveData<Boolean>()
 
     fun authenticate(server: String, user: String? = null, password: String? = null) {
@@ -64,7 +68,7 @@ class SambaViewModel(
         runIOInViewModelScope {
             try {
                 val list = sambaClientWrapper.list(directory)
-                var comparator = createComparator(sortingInfo)
+                val comparator = createComparator(sortingInfo)
                 val sortedList = list.sortedWith(comparator)
                 listResult.postValue(ResultWrapper(sortedList))
             } catch (e: Exception) {
@@ -86,6 +90,7 @@ class SambaViewModel(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun downloadFile(path: String) {
         val outFile = path.substringAfterLast(SambaClientWrapper.PATH_DELIMITER)
         val contentValues = contentValuesOf(
@@ -94,7 +99,7 @@ class SambaViewModel(
         )
         runIOInViewModelScope {
             try {
-                if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     throw IllegalStateException("Not supported for Android below 10")
                 }
                 contentResolver.insert(
@@ -125,14 +130,26 @@ class SambaViewModel(
         }
     }
 
+    fun createDirectory(path: String, directoryName: String) {
+        runIOInViewModelScope {
+            try {
+                sambaClientWrapper.createDirectory(path, directoryName)
+                directoryCreateResult.postValue(ResultWrapper(true))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                directoryCreateResult.postValue(ResultWrapper(e))
+            }
+        }
+    }
+
     private fun createComparator(sortingInfo: SortingInfo): Comparator<SambaFile> {
         return compareByDescending<SambaFile> { it.isUpMark }
             .thenByDescending { it.isDirectory }
             .run {
                 when (sortingInfo.isByName) {
                     true -> when (sortingInfo.isAscending) {
-                        true -> thenBy { it.name.toLowerCase() }
-                        else -> thenByDescending { it.name.toLowerCase() }
+                        true -> thenBy { it.name.toLowerCase(Locale.getDefault()) }
+                        else -> thenByDescending { it.name.toLowerCase(Locale.getDefault()) }
                     }
                     else -> when (sortingInfo.isAscending) {
                         true -> thenBy { it.changeTime }

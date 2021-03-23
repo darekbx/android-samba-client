@@ -30,6 +30,11 @@
     <string name="sort_asc">Ascending</string>
     <string name="sort_desc">Descending</string>
 
+    <string name="create_directory_title">Create directory</string>
+    <string name="create_directory_hint">Directory name</string>
+    <string name="create_directory_cancel">Cancel</string>
+    <string name="create_directory_create">Create</string>
+
     <string name="prefereces_explorer">File explorer</string>
     <string name="prefereces_show_as_list">Show as list</string>
     <string name="prefereces_show_as_list_summary">Display files list as list or grid</string>

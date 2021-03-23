@@ -30,7 +30,6 @@ import org.koin.android.viewmodel.ext.android.viewModel
  * - open file -> forward
  * - open dir -> forward (details: name, dates, size with files, like on google drive, delete with files)
  *
- * - add directory
  * - add file
  *
  */
@@ -93,16 +92,11 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
 
         observeOnViewLifecycle(sambaViewModel.isLoading) { showHideLoadingLayout(it) }
         observeOnViewLifecycle(sambaViewModel.listResult) { handleListResult(it) }
+        observeOnViewLifecycle(sambaViewModel.directoryCreateResult) { handleCreateDirResult(it) }
 
         sambaViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
 
-        binding.buttonAdd.setOnClickListener {
-
-
-            // TODO
-
-
-        }
+        binding.buttonAdd.setOnClickListener { openCreateDirectoryDialog() }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -143,6 +137,15 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
         dialog.show(childFragmentManager, SortingDialog::class.simpleName)
     }
 
+    private fun openCreateDirectoryDialog() {
+        val dialog = CreateDirectoryDialog()
+        dialog.arguments = sortingInfo.toBundle()
+        dialog.onCreate = { directoryName ->
+            sambaViewModel.createDirectory(pathMovement.currentPath(), directoryName)
+        }
+        dialog.show(childFragmentManager, CreateDirectoryDialog::class.simpleName)
+    }
+
     private fun initializeList(context: Context) {
         if (showAsList) {
             activeAdapter = filesListAdapter()
@@ -154,6 +157,17 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
 
         activeAdapter.onSambaFileClick = { handleSambaFileClick(it) }
         binding.filesList.adapter = activeAdapter
+    }
+
+    private fun handleCreateDirResult(resultWrapper: SambaViewModel.ResultWrapper<Boolean>) {
+        if (resultWrapper.hasError) {
+            pathMovement.removeLastPathSegment()
+            Toast.makeText(requireContext(), resultWrapper.errorMessage, Toast.LENGTH_SHORT)
+                .show()
+        } else {
+            // Refresh after dir creation
+            sambaViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
+        }
     }
 
     private fun handleListResult(resultWrapper: SambaViewModel.ResultWrapper<List<SambaFile>>) {
