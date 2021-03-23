@@ -18,20 +18,16 @@ import com.darekbx.sambaclient.databinding.FragmentFileExplorerBinding
 import com.darekbx.sambaclient.ui.explorer.SortingInfo.Companion.toSortingInfo
 import com.darekbx.sambaclient.ui.samba.PathMovement
 import com.darekbx.sambaclient.ui.samba.SambaFile
+import com.darekbx.sambaclient.ui.viewmodel.ResultWrapper
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
- *
- * - open maintentance
- *
- * - open file -> forward
+ * TODO
  * - open dir -> forward (details: name, dates, size with files, like on google drive, delete with files)
- *
- * - add file
- *
+ * - add file - by file sharing like in google drive (seems a lot of work)
  */
 class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
 
@@ -159,7 +155,7 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
         binding.filesList.adapter = activeAdapter
     }
 
-    private fun handleCreateDirResult(resultWrapper: SambaViewModel.ResultWrapper<Boolean>) {
+    private fun handleCreateDirResult(resultWrapper: ResultWrapper<Boolean>) {
         if (resultWrapper.hasError) {
             pathMovement.removeLastPathSegment()
             Toast.makeText(requireContext(), resultWrapper.errorMessage, Toast.LENGTH_SHORT)
@@ -170,14 +166,14 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
         }
     }
 
-    private fun handleListResult(resultWrapper: SambaViewModel.ResultWrapper<List<SambaFile>>) {
+    private fun handleListResult(resultWrapper: ResultWrapper<List<SambaFile>>) {
         if (resultWrapper.hasError) {
             pathMovement.removeLastPathSegment()
             Toast.makeText(requireContext(), resultWrapper.errorMessage, Toast.LENGTH_SHORT)
                 .show()
         } else {
             scrollListToTop()
-            activeAdapter.swapData(resultWrapper.result!!)
+            activeAdapter.swapData(resultWrapper.requireResult())
         }
     }
 

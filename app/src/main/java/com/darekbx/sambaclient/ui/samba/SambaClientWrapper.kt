@@ -13,6 +13,8 @@ import com.hierynomus.smbj.session.Session
 import com.hierynomus.smbj.share.DiskShare
 import java.io.OutputStream
 import java.lang.IllegalStateException
+import java.math.BigInteger
+import java.security.MessageDigest
 
 class SambaClientWrapper(private val smbClient: SMBClient) {
 
@@ -36,6 +38,14 @@ class SambaClientWrapper(private val smbClient: SMBClient) {
     fun close() {
         _session?.close()
         _diskShare?.close()
+    }
+
+    fun generateCredentialsMd5(): String {
+        val authContext = _session?.authenticationContext
+            ?: throw IllegalStateException("Authentication context is null")
+        val salt = "${authContext.username}_${authContext.password}"
+        val md = MessageDigest.getInstance("MD5")
+        return BigInteger(1, md.digest(salt.toByteArray())).toString(16).padStart(32, '0')
     }
 
     fun list(directory: String): List<SambaFile> {

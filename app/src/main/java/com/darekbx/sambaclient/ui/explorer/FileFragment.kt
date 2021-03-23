@@ -14,6 +14,7 @@ import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.FragmentFileBinding
 import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
 import com.darekbx.sambaclient.ui.samba.SambaFile
+import com.darekbx.sambaclient.ui.viewmodel.ResultWrapper
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import com.darekbx.sambaclient.util.setDateTime
@@ -98,7 +99,7 @@ class FileFragment : Fragment(R.layout.fragment_file) {
 
     private fun getFilePathArgument() = arguments?.getString(FileExplorerFragment.FILE_PATH_KEY)
 
-    private fun handleFileDownloadResult(resultWrapper: SambaViewModel.ResultWrapper<String>) {
+    private fun handleFileDownloadResult(resultWrapper: ResultWrapper<String>) {
         val message =
             if (resultWrapper.hasError) resultWrapper.errorMessage
             else "${getString(R.string.file_saved_to)} ${resultWrapper.result}"
@@ -110,7 +111,7 @@ class FileFragment : Fragment(R.layout.fragment_file) {
         }
     }
 
-    private fun handleFileDeleteResult(resultWrapper: SambaViewModel.ResultWrapper<Boolean>) {
+    private fun handleFileDeleteResult(resultWrapper: ResultWrapper<Boolean>) {
         val message =
             if (resultWrapper.hasError) resultWrapper.errorMessage
             else getString(R.string.file_was_deleted)
@@ -122,11 +123,11 @@ class FileFragment : Fragment(R.layout.fragment_file) {
         }
     }
 
-    private fun handleFileInfoResult(resultWrapper: SambaViewModel.ResultWrapper<SambaFile>) {
+    private fun handleFileInfoResult(resultWrapper: ResultWrapper<SambaFile>) {
         if (resultWrapper.hasError) {
             Toast.makeText(requireContext(), resultWrapper.errorMessage, Toast.LENGTH_LONG).show()
         } else {
-            displayFileInfo(resultWrapper.result!!)
+            displayFileInfo(resultWrapper.requireResult())
         }
     }
 

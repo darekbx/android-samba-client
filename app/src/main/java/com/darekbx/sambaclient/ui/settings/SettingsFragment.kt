@@ -6,14 +6,6 @@ import androidx.preference.PreferenceFragmentCompat
 import com.darekbx.sambaclient.BuildConfig
 import com.darekbx.sambaclient.R
 
-/**
- * TODO:
- *  - view type:
- *    - list
- *    - grid + columns count
- *
- *
- */
 class SettingsFragment: PreferenceFragmentCompat(),
     SharedPreferences.OnSharedPreferenceChangeListener  {
 

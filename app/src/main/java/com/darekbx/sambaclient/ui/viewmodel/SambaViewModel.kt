@@ -10,26 +10,12 @@ import androidx.lifecycle.*
 import com.darekbx.sambaclient.ui.explorer.SortingInfo
 import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
 import com.darekbx.sambaclient.ui.samba.SambaFile
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.IllegalStateException
 import java.util.*
-import kotlin.Comparator
 
 class SambaViewModel(
     private val sambaClientWrapper: SambaClientWrapper,
     private val contentResolver: ContentResolver
-) : ViewModel(), LifecycleObserver {
-
-    class ResultWrapper<T>(val result: T?, val exception: Exception? = null) {
-        val hasError = exception != null
-
-        constructor(exception: Exception) : this(null, exception)
-
-        val errorMessage = exception?.message
-    }
+) : LoadingViewModel(), LifecycleObserver {
 
     val authenticationResult = MutableLiveData<ResultWrapper<Boolean>>()
     val diskShareResult = MutableLiveData<ResultWrapper<Boolean>>()
@@ -38,7 +24,7 @@ class SambaViewModel(
     val fileDownloadResult = MutableLiveData<ResultWrapper<String>>()
     val fileDeleteResult = MutableLiveData<ResultWrapper<Boolean>>()
     val directoryCreateResult = MutableLiveData<ResultWrapper<Boolean>>()
-    val isLoading = MutableLiveData<Boolean>()
+    val md5CredentialsResult = MutableLiveData<ResultWrapper<String>>()
 
     fun authenticate(server: String, user: String? = null, password: String? = null) {
         runIOInViewModelScope {
@@ -48,6 +34,18 @@ class SambaViewModel(
             } catch (e: Exception) {
                 e.printStackTrace()
                 authenticationResult.postValue(ResultWrapper(e))
+            }
+        }
+    }
+
+    fun generateCredentialsMd5() {
+        runIOInViewModelScope {
+            try {
+                val md5Hash = sambaClientWrapper.generateCredentialsMd5()
+                md5CredentialsResult.postValue(ResultWrapper(md5Hash))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                md5CredentialsResult.postValue(ResultWrapper(e))
             }
         }
     }
@@ -162,16 +160,6 @@ class SambaViewModel(
     private fun dispose() {
         runIOInViewModelScope {
             sambaClientWrapper.close()
-        }
-    }
-
-    private fun <T> runIOInViewModelScope(callback: CoroutineScope.() -> T) {
-        isLoading.postValue(true)
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                callback()
-                isLoading.postValue(false)
-            }
         }
     }
 

@@ -14,6 +14,7 @@ import com.darekbx.sambaclient.BuildConfig
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.FragmentAuthenticationBinding
 import com.darekbx.sambaclient.preferences.AuthPreferences
+import com.darekbx.sambaclient.ui.viewmodel.ResultWrapper
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import com.google.android.material.textfield.TextInputLayout
@@ -89,7 +90,7 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
         sambaViewModel.connectToDiskShare(shareName!!)
     }
 
-    private fun handleShareNameResult(result: SambaViewModel.ResultWrapper<Boolean>) {
+    private fun handleShareNameResult(result: ResultWrapper<Boolean>) {
         if (result.hasError) {
             displaySetShareNameError(result.exception!!)
         } else {
@@ -98,7 +99,7 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
         }
     }
 
-    private fun handleAuthenticationResult(result: SambaViewModel.ResultWrapper<Boolean>) {
+    private fun handleAuthenticationResult(result: ResultWrapper<Boolean>) {
         if (result.hasError) {
             displayAuthenticateError(result.exception!!)
         } else {

@@ -14,4 +14,8 @@
         android:text="MAINTENANCE"
         />
 
+    <include
+        android:id="@+id/loading_layout"
+        layout="@layout/layout_progress" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
