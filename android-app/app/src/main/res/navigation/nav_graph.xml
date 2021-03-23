@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/authenticationFragment">
+
+    <fragment
+        android:id="@+id/authenticationFragment"
+        android:name="com.darekbx.sambaclient.ui.authentication.AuthenticationFragment"
+        android:label="AuthenticationFragment" >
+        <action
+            android:id="@+id/action_authenticationFragment_to_fileExplorerFragment"
+            app:destination="@id/fileExplorerFragment"
+            app:popUpTo="@id/authenticationFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/fileExplorerFragment"
+        android:name="com.darekbx.sambaclient.ui.explorer.FileExplorerFragment"
+        android:label="FileExplorerFragment">
+        <action
+            android:id="@+id/action_fileExplorerFragment_to_fileFragment"
+            app:destination="@id/fileFragment" />
+        <action
+            android:id="@+id/action_fileExplorerFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_fileExplorerFragment_to_maintenanceFragment"
+            app:destination="@id/maintenanceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fileFragment"
+        android:name="com.darekbx.sambaclient.ui.explorer.FileFragment"
+        android:label="FileFragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.darekbx.sambaclient.ui.settings.SettingsFragment"
+        android:label="SettingsFragment" />
+    <fragment
+        android:id="@+id/maintenanceFragment"
+        android:name="com.darekbx.sambaclient.ui.maintenance.MaintenanceFragment"
+        android:label="MaintenanceFragment" />
+</navigation>
