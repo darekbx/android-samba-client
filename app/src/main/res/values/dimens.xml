@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="bigPadding">64dp</dimen>
-    <dimen name="largePadding">32dp</dimen>
-    <dimen name="mediumPadding">16dp</dimen>
-    <dimen name="smallPadding">8dp</dimen>
-    <dimen name="tinyPadding">4dp</dimen>
-    <dimen name="fileIconSize">32dp</dimen>
-</resources>
