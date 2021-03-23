@@ -4,13 +4,19 @@ class PathMovement {
 
     private val pathSegments = mutableListOf<String>()
 
+    companion object {
+        const val UP_SEGMENT = "."
+        const val ROOT_SEGMENT = ".."
+    }
+
+    fun depth() = pathSegments.size
 
     fun currentPath() = pathSegments.joinToString("/")
 
     fun obtainPath(directory: String): String {
         when (directory) {
-            "." -> removeLastPathSegment()
-            ".." -> pathSegments.clear()
+            UP_SEGMENT -> removeLastPathSegment()
+            ROOT_SEGMENT -> pathSegments.clear()
             else -> pathSegments.add(directory)
         }
         return currentPath()

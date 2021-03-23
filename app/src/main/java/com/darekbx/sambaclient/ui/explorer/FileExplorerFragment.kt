@@ -3,10 +3,14 @@ package com.darekbx.sambaclient.ui.explorer
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.darekbx.sambaclient.BuildConfig
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.AdapterSambaListFileBinding
 import com.darekbx.sambaclient.databinding.AdapterSambaGridFileBinding
@@ -20,10 +24,7 @@ import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
- * - sort order:
- *   - name (asc, desc), created date (asc, desc)
- *   - persisted
- * - open settings
+ *
  * - open maintentance
  *
  * - open file -> forward
@@ -36,9 +37,8 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
 
     companion object {
-        private const val GRID_COLUMNS_COUNT = 4 // TODO from settings
-        private const val IS_LIST = true // TODO from settings
-        private const val BUNDLE_KEY = "eRn8Q5U5"
+        private const val SORT_INFO_BUNDLE_KEY = "eRn8Q5U5"
+        const val FILE_PATH_KEY = "83RcSgXp"
     }
 
     private val sambaViewModel: SambaViewModel by viewModel()
@@ -49,6 +49,20 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
 
     private lateinit var activeAdapter: BaseSambaFileAdapter
     private var sortingInfo = SortingInfo()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, object :
+            OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (!goUp()) {
+                    // Went to the root, close app
+                    requireActivity().finish()
+                }
+            }
+        })
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,7 +84,7 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
         val context = requireContext()
 
         if (savedInstanceState != null) {
-            savedInstanceState.getBundle(BUNDLE_KEY)?.let { sortingBundle ->
+            savedInstanceState.getBundle(SORT_INFO_BUNDLE_KEY)?.let { sortingBundle ->
                 sortingInfo = sortingBundle.toSortingInfo()
             }
         }
@@ -80,12 +94,20 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
         observeOnViewLifecycle(sambaViewModel.isLoading) { showHideLoadingLayout(it) }
         observeOnViewLifecycle(sambaViewModel.listResult) { handleListResult(it) }
 
-        sambaViewModel.listDirectory(sortingInfo)
+        sambaViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
+
+        binding.buttonAdd.setOnClickListener {
+
+
+            // TODO
+
+
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBundle(BUNDLE_KEY, sortingInfo.toBundle())
+        outState.putBundle(SORT_INFO_BUNDLE_KEY, sortingInfo.toBundle())
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -122,12 +144,12 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
     }
 
     private fun initializeList(context: Context) {
-        if (IS_LIST) {
+        if (showAsList) {
             activeAdapter = filesListAdapter()
             binding.filesList.layoutManager = LinearLayoutManager(context)
         } else {
             activeAdapter = filesGridAdapter()
-            binding.filesList.layoutManager = GridLayoutManager(context, GRID_COLUMNS_COUNT)
+            binding.filesList.layoutManager = GridLayoutManager(context, gridColumnsCount)
         }
 
         activeAdapter.onSambaFileClick = { handleSambaFileClick(it) }
@@ -137,9 +159,23 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
     private fun handleListResult(resultWrapper: SambaViewModel.ResultWrapper<List<SambaFile>>) {
         if (resultWrapper.hasError) {
             pathMovement.removeLastPathSegment()
+            Toast.makeText(requireContext(), resultWrapper.errorMessage, Toast.LENGTH_SHORT)
+                .show()
         } else {
-            activeAdapter.swapData(resultWrapper.result)
+            scrollListToTop()
+            activeAdapter.swapData(resultWrapper.result!!)
         }
+    }
+
+    private fun scrollListToTop() {
+        binding.filesList.scrollToPosition(0)
+    }
+
+    private fun goUp(): Boolean {
+        if (pathMovement.depth() == 0) return false
+        pathMovement.removeLastPathSegment()
+        sambaViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
+        return true
     }
 
     private fun openDirectory(directory: String?) {
@@ -160,7 +196,15 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
         if (sambaFile.isDirectory) {
             openDirectory(sambaFile.name)
         } else {
-            // TODO open file
+            val pathToFile =
+                if (pathMovement.depth() == 0) sambaFile.name
+                else "${pathMovement.currentPath()}/${sambaFile.name}"
+            val arguments = Bundle().apply {
+                putString(FILE_PATH_KEY, pathToFile)
+            }
+
+            findNavController()
+                .navigate(R.id.action_fileExplorerFragment_to_fileFragment, arguments)
         }
     }
 
@@ -180,5 +224,15 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
                 root: ViewGroup
             ) = AdapterSambaGridFileBinding.inflate(inflater, root, false)
         }
+    }
+
+    private val showAsList: Boolean
+        get() = settingsPreferences.getBoolean("show_as_list", BuildConfig.SHOW_AS_LIST)
+
+    private val gridColumnsCount: Int
+        get() = settingsPreferences.getInt("grid_columns_count", BuildConfig.GRID_COLUMNS_COUNT)
+
+    private val settingsPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(requireContext())
     }
 }

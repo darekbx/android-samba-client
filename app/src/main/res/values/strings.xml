@@ -30,4 +30,15 @@
     <string name="sort_asc">Ascending</string>
     <string name="sort_desc">Descending</string>
 
+    <string name="prefereces_explorer">File explorer</string>
+    <string name="prefereces_show_as_list">Show as list</string>
+    <string name="prefereces_show_as_list_summary">Display files list as list or grid</string>
+    <string name="prefereces_grid_columns_count">Grid columns count</string>
+
+    <string name="file_download">Download</string>
+    <string name="file_open">Open</string>
+    <string name="file_delete">Delete</string>
+    <string name="file_saved_to">File saved to: </string>
+    <string name="file_was_deleted">File was deleted</string>
+
 </resources>

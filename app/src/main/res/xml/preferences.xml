@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/prefereces_explorer">
+        <SwitchPreferenceCompat
+            android:key="show_as_list"
+            android:title="@string/prefereces_show_as_list"
+            android:summary="@string/prefereces_show_as_list_summary"
+            />
+        <com.darekbx.sambaclient.ui.settings.IntEditTextPreference
+            android:key="grid_columns_count"
+            android:title="@string/prefereces_grid_columns_count"
+            />
+    </PreferenceCategory>
+
+</PreferenceScreen>

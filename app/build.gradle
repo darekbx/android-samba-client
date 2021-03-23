@@ -23,6 +23,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            buildConfigField 'boolean', 'SHOW_AS_LIST', "true"
+            buildConfigField 'int', 'GRID_COLUMNS_COUNT', "4"
+        }
     }
     
     compileOptions {
@@ -51,6 +55,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation "androidx.preference:preference-ktx:1.1.1"
 
     implementation 'com.hierynomus:smbj:0.10.0'
 

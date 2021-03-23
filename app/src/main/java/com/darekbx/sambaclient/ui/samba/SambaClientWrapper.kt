@@ -1,13 +1,22 @@
 package com.darekbx.sambaclient.ui.samba
 
+import com.hierynomus.msdtyp.AccessMask
+import com.hierynomus.msfscc.fileinformation.FileAllInformation
 import com.hierynomus.msfscc.fileinformation.FileIdBothDirectoryInformation
+import com.hierynomus.mssmb2.SMB2CreateDisposition
+import com.hierynomus.mssmb2.SMB2ShareAccess
 import com.hierynomus.smbj.SMBClient
 import com.hierynomus.smbj.auth.AuthenticationContext
 import com.hierynomus.smbj.session.Session
 import com.hierynomus.smbj.share.DiskShare
+import java.io.OutputStream
 import java.lang.IllegalStateException
 
 class SambaClientWrapper(private val smbClient: SMBClient) {
+
+    companion object {
+        const val PATH_DELIMITER = "\\"
+    }
 
     private var _session: Session? = null
     private var _diskShare: DiskShare? = null
@@ -33,6 +42,30 @@ class SambaClientWrapper(private val smbClient: SMBClient) {
             ?: throw IllegalStateException("Disk share error!")
     }
 
+    fun fileInformation(path: String): SambaFile? {
+        val fileInformation = _diskShare?.getFileInformation(path) ?: return null
+        return fileInformation.toSambaFile()
+    }
+
+    fun fileDownload(path: String, outputStream: OutputStream) {
+        _diskShare
+            ?.openFile(
+                path,
+                setOf(AccessMask.GENERIC_READ),
+                null,
+                SMB2ShareAccess.ALL,
+                SMB2CreateDisposition.FILE_OPEN,
+                null
+            )
+            ?.use { file ->
+                file.read(outputStream)
+            } ?: throw IllegalStateException("File is not accessible")
+    }
+
+    fun fileDelete(path: String) {
+        _diskShare?.rm(path)
+    }
+
     private fun FileIdBothDirectoryInformation.toSambaFile(): SambaFile {
         return SambaFile(
             fileName,
@@ -40,6 +73,16 @@ class SambaClientWrapper(private val smbClient: SMBClient) {
             changeTime.toEpochMillis(),
             endOfFile,
             fileAttributes
+        )
+    }
+
+    private fun FileAllInformation.toSambaFile(): SambaFile {
+        return SambaFile(
+            nameInformation,
+            basicInformation.creationTime.toEpochMillis(),
+            basicInformation.changeTime.toEpochMillis(),
+            standardInformation.endOfFile,
+            basicInformation.fileAttributes
         )
     }
 

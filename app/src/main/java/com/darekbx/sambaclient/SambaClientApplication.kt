@@ -26,10 +26,11 @@ class SambaClientApplication : Application() {
                 Context.MODE_PRIVATE
             )
         }
+        single { (get() as Context).contentResolver }
     }
 
     private val viewModelModule = module {
-        viewModel { SambaViewModel(get()) }
+        viewModel { SambaViewModel(get(), get()) }
     }
 
     override fun onCreate() {
