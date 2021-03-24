@@ -43,10 +43,13 @@ class SambaClientWrapper(private val smbClient: SMBClient) {
     fun generateCredentialsMd5(): String {
         val authContext = _session?.authenticationContext
             ?: throw IllegalStateException("Authentication context is null")
-        val salt = "${authContext.username}_${authContext.password}"
+        val salt = "${authContext.username}_${String(authContext.password)}"
         val md = MessageDigest.getInstance("MD5")
         return BigInteger(1, md.digest(salt.toByteArray())).toString(16).padStart(32, '0')
     }
+
+    fun hostName() = _session?.connection?.remoteHostname
+        ?: throw IllegalStateException("Hostname is null")
 
     fun list(directory: String): List<SambaFile> {
         val list = _diskShare?.list(directory)

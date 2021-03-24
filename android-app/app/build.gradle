@@ -26,6 +26,7 @@ android {
         debug {
             buildConfigField 'boolean', 'SHOW_AS_LIST', "true"
             buildConfigField 'int', 'GRID_COLUMNS_COUNT', "4"
+            buildConfigField 'int', 'REMOTE_CONTROL_PORT', "8099"
         }
     }
     
@@ -59,6 +60,8 @@ dependencies {
 
     implementation 'com.hierynomus:smbj:0.10.0'
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
 
     def koin_version = '2.2.2'
     implementation "org.koin:koin-android:$koin_version"

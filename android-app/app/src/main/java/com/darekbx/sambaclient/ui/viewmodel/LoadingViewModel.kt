@@ -12,7 +12,7 @@ open class LoadingViewModel: ViewModel() {
 
     val isLoading = MutableLiveData<Boolean>()
 
-    protected fun <T> runIOInViewModelScope(callback: CoroutineScope.() -> T) {
+    protected  fun <T> runIOInViewModelScope(callback: suspend CoroutineScope.() -> T) {
         isLoading.postValue(true)
         viewModelScope.launch {
             withContext(Dispatchers.IO) {

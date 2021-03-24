@@ -10,10 +10,14 @@ class RemoteControlViewModel(
 
     val statisticsResult = MutableLiveData<ResultWrapper<Statistics>>()
 
-    fun retrieveStatistics(md5Credentials: String) {
+    fun retrieveStatistics(
+        maintenanceServerAddress: String,
+        md5Credentials: String
+    ) {
         runIOInViewModelScope {
             try {
-                val statistics = remoteControl.retrieveStatistics(md5Credentials)
+                val statistics = remoteControl.retrieveStatistics(
+                    maintenanceServerAddress, md5Credentials)
                 statisticsResult.postValue(ResultWrapper(statistics))
             } catch (e: Exception) {
                 e.printStackTrace()

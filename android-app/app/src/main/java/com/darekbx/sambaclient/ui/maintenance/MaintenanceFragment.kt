@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.FragmentMaintenanceBinding
 import com.darekbx.sambaclient.ui.remotecontrol.Statistics
+import com.darekbx.sambaclient.ui.samba.Credentials
 import com.darekbx.sambaclient.ui.viewmodel.RemoteControlViewModel
 import com.darekbx.sambaclient.ui.viewmodel.ResultWrapper
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
@@ -56,7 +57,7 @@ class MaintenanceFragment: Fragment(R.layout.fragment_maintenance) {
 
         with(sambaViewModel) {
             observeOnViewLifecycle(isLoading) { showHideLoadingLayout(it) }
-            observeOnViewLifecycle(md5CredentialsResult) { handleMd5Credentials(it) }
+            observeOnViewLifecycle(credentialsResult) { handleMd5Credentials(it) }
 
             generateCredentialsMd5()
         }
@@ -67,12 +68,12 @@ class MaintenanceFragment: Fragment(R.layout.fragment_maintenance) {
         }
     }
 
-    private fun handleMd5Credentials(resultWrapper: ResultWrapper<String>) {
+    private fun handleMd5Credentials(resultWrapper: ResultWrapper<Credentials>) {
         if (resultWrapper.hasError) {
             Toast.makeText(requireContext(), resultWrapper.errorMessage, Toast.LENGTH_LONG).show()
         } else {
-            val md5Credentials = resultWrapper.requireResult()
-            remoteControlViewModel.retrieveStatistics(md5Credentials)
+            val credentials = resultWrapper.requireResult()
+            remoteControlViewModel.retrieveStatistics(credentials.hostname, credentials.md5Credentials)
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.contentValuesOf
 import androidx.lifecycle.*
 import com.darekbx.sambaclient.ui.explorer.SortingInfo
+import com.darekbx.sambaclient.ui.samba.Credentials
 import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
 import com.darekbx.sambaclient.ui.samba.SambaFile
 import java.util.*
@@ -24,7 +25,7 @@ class SambaViewModel(
     val fileDownloadResult = MutableLiveData<ResultWrapper<String>>()
     val fileDeleteResult = MutableLiveData<ResultWrapper<Boolean>>()
     val directoryCreateResult = MutableLiveData<ResultWrapper<Boolean>>()
-    val md5CredentialsResult = MutableLiveData<ResultWrapper<String>>()
+    val credentialsResult = MutableLiveData<ResultWrapper<Credentials>>()
 
     fun authenticate(server: String, user: String? = null, password: String? = null) {
         runIOInViewModelScope {
@@ -41,11 +42,13 @@ class SambaViewModel(
     fun generateCredentialsMd5() {
         runIOInViewModelScope {
             try {
+                val hostName = sambaClientWrapper.hostName()
                 val md5Hash = sambaClientWrapper.generateCredentialsMd5()
-                md5CredentialsResult.postValue(ResultWrapper(md5Hash))
+                val credentials = Credentials(hostName, md5Hash)
+                credentialsResult.postValue(ResultWrapper(credentials))
             } catch (e: Exception) {
                 e.printStackTrace()
-                md5CredentialsResult.postValue(ResultWrapper(e))
+                credentialsResult.postValue(ResultWrapper(e))
             }
         }
     }

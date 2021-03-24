@@ -20,7 +20,7 @@ class SambaClientApplication : Application() {
 
     private val commonModule = module {
         single { SMBClient() }
-        single { RemoteControl() }
+        single { RemoteControl(BuildConfig.REMOTE_CONTROL_PORT) }
         single { SambaClientWrapper(get()) }
         single { AuthPreferences(get()) }
         single { PathMovement() }
