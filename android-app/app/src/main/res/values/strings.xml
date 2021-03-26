@@ -46,4 +46,6 @@
     <string name="file_saved_to">File saved to: </string>
     <string name="file_was_deleted">File was deleted</string>
 
+    <string name="statistics_used_of">Used %s of %s</string>
+
 </resources>

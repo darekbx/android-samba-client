@@ -22,7 +22,7 @@ class RemoteControl(private val port: Int) {
         md5Credentials: String
     ): Statistics {
         return suspendCoroutine { continuation ->
-            val url = "http://$maintenanceServerAddress:$port/$STATISTICS_ENDPOINT"
+            val url = "http://$maintenanceServerAddress:$port$STATISTICS_ENDPOINT"
             val statistics = downloadObject<Statistics>(url, md5Credentials)
             continuation.resume(statistics)
         }

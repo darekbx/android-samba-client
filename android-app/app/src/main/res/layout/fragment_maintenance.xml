@@ -1,18 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    >
 
     <TextView
+        android:id="@+id/used_space"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="MAINTENANCE"
+        android:layout_marginTop="@dimen/mediumPadding"
+        android:layout_marginStart="@dimen/mediumPadding"
+        tools:text="Used 4.5GB of 8.0GB"
         />
+    <ProgressBar
+        android:id="@+id/user_space_progress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/used_space"
+        app:layout_constraintStart_toStartOf="@id/used_space"
+        app:layout_constraintEnd_toEndOf="@id/used_space"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        tools:max="100"
+        tools:progress="35"
+        />
+
 
     <include
         android:id="@+id/loading_layout"

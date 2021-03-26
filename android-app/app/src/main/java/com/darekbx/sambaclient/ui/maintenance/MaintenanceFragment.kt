@@ -1,6 +1,7 @@
 package com.darekbx.sambaclient.ui.maintenance
 
 import android.os.Bundle
+import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +30,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
  * - 10 biggest files
  * - chart by file sizes and file types?
  */
-class MaintenanceFragment: Fragment(R.layout.fragment_maintenance) {
+class MaintenanceFragment: Fragment() {
 
     private val sambaViewModel: SambaViewModel by viewModel()
     private val remoteControlViewModel: RemoteControlViewModel by viewModel()
@@ -83,10 +84,21 @@ class MaintenanceFragment: Fragment(R.layout.fragment_maintenance) {
         } else {
 
             // TODO display statistics
-
+            displayUsedSpace(resultWrapper.result!!)
         }
     }
 
+    private fun displayUsedSpace(statistics: Statistics) {
+        val usedPercent = (statistics.usedSpace * 100 / statistics.totalSpace).toInt()
+        binding.userSpaceProgress.max = 100
+        binding.userSpaceProgress.progress = usedPercent
+
+        binding.usedSpace.text = getString(
+            R.string.statistics_used_of,
+            Formatter.formatFileSize(requireContext(), statistics.usedSpace),
+            Formatter.formatFileSize(requireContext(), statistics.totalSpace)
+        )
+    }
 
     private fun showHideLoadingLayout(isLoading: Boolean) {
         binding.loadingLayout.loadingLayout.visibility = when (isLoading) {

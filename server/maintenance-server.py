@@ -11,9 +11,10 @@ class Maintenence:
     SHARE_PATH = ".share_path"
 
     def createStatistics(self):
+        used_space = self._usedSpace()
         return {
-            "usedSpace": self._usedSpace(),
-            "freeSpace": self._freeSpace(),
+            "usedSpace": used_space,
+            "totalSpace": self._totalSpace(used_space),
             "lastBackupTimestamp": self._lastBackupTimestamp(),
             "biggestFiles": self._biggestFiles(),
             "typeStatistics": self._typeStatistics()
@@ -23,9 +24,10 @@ class Maintenence:
         root_directory = Path(self._read_share_path())
         return sum(f.stat().st_size for f in root_directory.glob('**/*') if f.is_file())
 
-    def _freeSpace(self):
+    # Total space for data
+    def _totalSpace(self, used_space):
         usage = shutil.disk_usage(self._read_share_path())
-        return usage.free
+        return usage.total - (usage.used - used_space)
 
     def _lastBackupTimestamp(self):
         return None

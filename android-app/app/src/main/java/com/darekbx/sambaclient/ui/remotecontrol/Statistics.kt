@@ -2,7 +2,7 @@ package com.darekbx.sambaclient.ui.remotecontrol
 
 class Statistics(
     val usedSpace: Long,
-    val freeSpace: Long,
+    val totalSpace: Long,
     val lastBackupTimestamp: Long,
     val biggestFiles: List<File>,
     val typeStatistics: List<TypeStatistic>
