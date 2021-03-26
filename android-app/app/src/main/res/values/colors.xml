@@ -8,4 +8,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="loading_background">#6000</color>
+
+    <color name="chart_doc">#42a5f5</color>
+    <color name="chart_image">#66bb6a</color>
+    <color name="chart_movie">#ef5350</color>
+    <color name="chart_archive">#ffca28</color>
+    <color name="chart_other">#bdbdbd</color>
 </resources>

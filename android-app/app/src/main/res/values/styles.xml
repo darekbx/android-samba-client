@@ -19,4 +19,9 @@
         <item name="android:ellipsize">end</item>
     </style>
 
+    <style name="bigFileItem">
+        <item name="android:paddingEnd">@dimen/smallPadding</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
 </resources>

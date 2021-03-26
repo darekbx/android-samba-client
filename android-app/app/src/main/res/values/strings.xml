@@ -46,6 +46,14 @@
     <string name="file_saved_to">File saved to: </string>
     <string name="file_was_deleted">File was deleted</string>
 
-    <string name="statistics_used_of">Used %s of %s</string>
+    <string name="statistics_title">Statistics</string>
+    <string name="statistics_used_of" formatted="false">Used %s of %s</string>
+    <string name="count_size_title">Count / Size by type</string>
+    <string name="type_image">Images %o (%s)</string>
+    <string name="type_doc">Documents %o (%s)</string>
+    <string name="type_movie">Movies %o (%s)</string>
+    <string name="type_archive">Archives %o (%s)</string>
+    <string name="type_other">Other %o (%s)</string>
+    <string name="biggest_files_title">10 biggest files</string>
 
 </resources>

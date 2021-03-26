@@ -51,7 +51,44 @@ class Maintenence:
         return biggset_files
     
     def _typeStatistics(self):
-        return []
+        image_types = ["png", "bmp", "jpeg", "jpg", "gif", "svg"]
+        movie_types = ["mpeg", "mpg", "mov", "qt", "mp4", "wmv", "mpv", "avi", "m4p", "m4v", "mp2", "mpe"]
+        doc_types = ["doc", "docx", "txt", "rtf", "xlx", "xlxs", "ppt", "ppts", "pdf"]
+        archive_types = ["zip", "gz", "tar", "rar", "7z"]
+        
+        images = { "count": 0, "overallSize": 0 }
+        movies = { "count": 0, "overallSize": 0 }
+        docs = { "count": 0, "overallSize": 0 }
+        archives = { "count": 0, "overallSize": 0 }
+        others = { "count": 0, "overallSize": 0 }
+
+        root_directory = Path(self._read_share_path())
+        for f in root_directory.glob('**/*'):
+            if f.is_file():
+                file_size = f.stat().st_size
+                extension = os.path.splitext(str(f))[1][1:].strip().lower()
+                obj = {}
+                if extension in image_types:
+                    obj = images
+                elif extension in movie_types:
+                    obj = movies
+                elif extension in doc_types:
+                    obj = docs
+                elif extension in archive_types:
+                    obj = archives
+                else:
+                    obj = others
+
+                obj["count"] = obj["count"] + 1
+                obj["overallSize"] = obj["overallSize"] + file_size
+
+        return [
+            { "fileType": "image", **images},
+            { "fileType": "movie", **movies},
+            { "fileType": "doc", **docs },
+            { "fileType": "archive", **archives },
+            { "fileType": "other", **others }
+        ]
 
     def _read_share_path(self):
         with open(self.SHARE_PATH, "r") as handle:

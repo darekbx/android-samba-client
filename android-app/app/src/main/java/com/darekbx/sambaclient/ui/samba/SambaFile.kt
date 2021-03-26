@@ -17,7 +17,7 @@ class SambaFile(
 
     val icon = when (File(name).extension.toLowerCase()) {
         "jpg", "png", "jpeg", "bmp", "svg", "gif" -> R.drawable.ic_file_image
-        "doc", "docx", "txt", "rtf" -> R.drawable.ic_text_file
+        "doc", "docx", "txt", "rtf", "xlx", "xlxs", "ppt", "ppts", "pdf" -> R.drawable.ic_text_file
         "zip", "gz", "rar", "tar", "7z" -> R.drawable.ic_archive_file
         else -> R.drawable.ic_common_file
     }

@@ -5,11 +5,13 @@ import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.FragmentMaintenanceBinding
 import com.darekbx.sambaclient.ui.remotecontrol.Statistics
+import com.darekbx.sambaclient.ui.remotecontrol.TypeStatistic
 import com.darekbx.sambaclient.ui.samba.Credentials
 import com.darekbx.sambaclient.ui.viewmodel.RemoteControlViewModel
 import com.darekbx.sambaclient.ui.viewmodel.ResultWrapper
@@ -18,17 +20,8 @@ import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
- * RPi maintentance server:
- * - created with http server
- * - communication through json
- * - authorization: md5("${samba.auth.context.user}_${samba.auth.context.password}")
- *
- * - used space
- * - free space
  * - last backup date
  * - make backup (select usb drive for a backup, detect usb drives)
- * - 10 biggest files
- * - chart by file sizes and file types?
  */
 class MaintenanceFragment: Fragment() {
 
@@ -83,8 +76,11 @@ class MaintenanceFragment: Fragment() {
             Toast.makeText(requireContext(), resultWrapper.errorMessage, Toast.LENGTH_LONG).show()
         } else {
 
-            // TODO display statistics
-            displayUsedSpace(resultWrapper.result!!)
+            with(resultWrapper.requireResult()) {
+                displayUsedSpace(this)
+                displayTypeStatistics(this)
+                displayBiggestFiles(this)
+            }
         }
     }
 
@@ -93,11 +89,40 @@ class MaintenanceFragment: Fragment() {
         binding.userSpaceProgress.max = 100
         binding.userSpaceProgress.progress = usedPercent
 
+        val userSpaceFormatted = Formatter.formatFileSize(requireContext(), statistics.usedSpace)
+        val totalSpaceFormatted = Formatter.formatFileSize(requireContext(), statistics.totalSpace)
+
         binding.usedSpace.text = getString(
-            R.string.statistics_used_of,
-            Formatter.formatFileSize(requireContext(), statistics.usedSpace),
-            Formatter.formatFileSize(requireContext(), statistics.totalSpace)
+            R.string.statistics_used_of, userSpaceFormatted, totalSpaceFormatted
         )
+    }
+
+    private fun displayTypeStatistics(statistics: Statistics) {
+        binding.countChart.invalidateWithData(statistics.typeStatistics)
+        binding.sizeChart.invalidateWithData(statistics.typeStatistics)
+
+        with(statistics) {
+            displayLegend(binding.typeImages, TypeStatistic.TYPE_IMAGES, R.string.type_image)
+            displayLegend(binding.typeMovies, TypeStatistic.TYPE_MOVIES, R.string.type_movie)
+            displayLegend(binding.typeDocs, TypeStatistic.TYPE_DOCUMENTS, R.string.type_doc)
+            displayLegend(binding.typeArchives, TypeStatistic.TYPE_ARCHIVES, R.string.type_archive)
+            displayLegend(binding.typeOthers, TypeStatistic.TYPE_OTHERS, R.string.type_other)
+        }
+    }
+
+    private fun Statistics.displayLegend(view: TextView, type: String, messageResId: Int) {
+        val imagesType = typeStatistics.first { it.fileType == type }
+        view.text = getString(
+            messageResId,
+            imagesType.count,
+            Formatter.formatFileSize(requireContext(), imagesType.overallSize)
+        )
+    }
+
+    private fun displayBiggestFiles(statistics: Statistics) {
+        binding.biggestFiles.adapter = BigFileAdapter(requireContext()).apply {
+            addAll(statistics.biggestFiles)
+        }
     }
 
     private fun showHideLoadingLayout(isLoading: Boolean) {

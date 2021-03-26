@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="file"
+            type="com.darekbx.sambaclient.ui.remotecontrol.File" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/tinyPadding">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="@dimen/mediumPadding"
+            android:paddingEnd="@dimen/smallPadding"
+            android:ellipsize="end"
+            android:text="@{file.name}"
+            tools:text="big_file.zip"
+            style="@style/bigFileItem" />
+
+        <TextView
+            android:id="@+id/size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/smallPadding"
+            app:fileSize="@{file.size}"
+            tools:text="88.0GB"
+            style="@style/bigFileItem" />
+
+        <TextView
+            android:id="@+id/directory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="@{file.directory}"
+            tools:text="/files/long_directory"
+            style="@style/bigFileItem" />
+
+    </LinearLayout>
+
+</layout>
