@@ -25,6 +25,11 @@ class SambaClientWrapper(private val smbClient: SMBClient) {
     private var _session: Session? = null
     private var _diskShare: DiskShare? = null
 
+    fun authenticate(server: String, user: String? = null, password: String? = null, shareName: String) {
+        authenticate(server, user, password)
+        connectToDiskShare(shareName)
+    }
+
     fun authenticate(server: String, user: String? = null, password: String? = null) {
         val connection = smbClient.connect(server)
         val authenticationContext = createAuthContext(user, password)

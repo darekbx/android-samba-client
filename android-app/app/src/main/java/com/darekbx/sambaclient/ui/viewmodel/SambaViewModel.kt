@@ -19,6 +19,7 @@ class SambaViewModel(
 ) : LoadingViewModel(), LifecycleObserver {
 
     val authenticationResult = MutableLiveData<ResultWrapper<Boolean>>()
+    val autoAuthenticationResult = MutableLiveData<ResultWrapper<Boolean>>()
     val diskShareResult = MutableLiveData<ResultWrapper<Boolean>>()
     val listResult = MutableLiveData<ResultWrapper<List<SambaFile>>>()
     val fileInfoResult = MutableLiveData<ResultWrapper<SambaFile>>()
@@ -26,6 +27,18 @@ class SambaViewModel(
     val fileDeleteResult = MutableLiveData<ResultWrapper<Boolean>>()
     val directoryCreateResult = MutableLiveData<ResultWrapper<Boolean>>()
     val credentialsResult = MutableLiveData<ResultWrapper<Credentials>>()
+
+    fun authenticate(server: String, user: String? = null, password: String? = null, shareName: String) {
+        runIOInViewModelScope {
+            try {
+                sambaClientWrapper.authenticate(server, user, password, shareName)
+                autoAuthenticationResult.postValue(ResultWrapper(true))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                autoAuthenticationResult.postValue(ResultWrapper(e))
+            }
+        }
+    }
 
     fun authenticate(server: String, user: String? = null, password: String? = null) {
         runIOInViewModelScope {

@@ -32,7 +32,7 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
 
     companion object {
         private const val ANIMATION_DURATION = 500L
-        private const val AUTO_LOGIN = true
+        private const val AUTO_LOGIN_ENABLED = true
     }
 
     private val sambaViewModel: SambaViewModel by sharedViewModel()
@@ -66,6 +66,7 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
             observeOnViewLifecycle(isLoading) { showHideLoadingLayout(it) }
             observeOnViewLifecycle(authenticationResult) { handleAuthenticationResult(it) }
             observeOnViewLifecycle(diskShareResult) { handleShareNameResult(it) }
+            observeOnViewLifecycle(autoAuthenticationResult) { handleAutoAuthenticationResult(it) }
         }
 
         binding.authenticateButton.setOnClickListener {
@@ -75,7 +76,14 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
             }
         }
 
-        if (AUTO_LOGIN) {
+        if (AUTO_LOGIN_ENABLED) {
+            val credentials = authPreferences.read()
+            val shareName = authPreferences.readShareName()
+            if (credentials.arePersisted && shareName != null) {
+                with(credentials) {
+                    sambaViewModel.authenticate(address!!, user, password, shareName)
+                }
+            }
         } else {
             fillRememberedCredentials()
         }
@@ -104,6 +112,14 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
             displaySetShareNameError(result.exception!!)
         } else {
             rememberShareName()
+            findNavController().navigate(R.id.action_authenticationFragment_to_fileExplorerFragment)
+        }
+    }
+
+    private fun handleAutoAuthenticationResult(result: ResultWrapper<Boolean>) {
+        if (result.hasError) {
+            displayAuthenticateError(result.exception!!)
+        } else {
             findNavController().navigate(R.id.action_authenticationFragment_to_fileExplorerFragment)
         }
     }
