@@ -25,7 +25,6 @@ import java.lang.Exception
 
 /**
  * TODO
- *  - automatic logic, when remember me is chcked
  *  - check if active wifi is connected to home wifi (from settings) if yes then use sambe else heroku remote
  */
 class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
