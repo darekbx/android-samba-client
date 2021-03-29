@@ -10,23 +10,24 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.FragmentMaintenanceBinding
-import com.darekbx.sambaclient.ui.remotecontrol.Statistics
-import com.darekbx.sambaclient.ui.remotecontrol.TypeStatistic
+import com.darekbx.sambaclient.ui.statistics.Statistics
+import com.darekbx.sambaclient.ui.statistics.TypeStatistic
 import com.darekbx.sambaclient.ui.samba.Credentials
-import com.darekbx.sambaclient.ui.viewmodel.RemoteControlViewModel
+import com.darekbx.sambaclient.ui.viewmodel.StatisticsViewModel
 import com.darekbx.sambaclient.ui.viewmodel.ResultWrapper
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
+ * TODO
  * - last backup date
  * - make backup (select usb drive for a backup, detect usb drives)
  */
 class MaintenanceFragment: Fragment() {
 
     private val sambaViewModel: SambaViewModel by viewModel()
-    private val remoteControlViewModel: RemoteControlViewModel by viewModel()
+    private val statisticsViewModel: StatisticsViewModel by viewModel()
 
     private var _binding: FragmentMaintenanceBinding? = null
     private val binding get() = _binding!!
@@ -56,7 +57,7 @@ class MaintenanceFragment: Fragment() {
             generateCredentialsMd5()
         }
 
-        with(remoteControlViewModel) {
+        with(statisticsViewModel) {
             observeOnViewLifecycle(isLoading) { showHideLoadingLayout(it) }
             observeOnViewLifecycle(statisticsResult) { handleStatistics(it) }
         }
@@ -67,7 +68,7 @@ class MaintenanceFragment: Fragment() {
             Toast.makeText(requireContext(), resultWrapper.errorMessage, Toast.LENGTH_LONG).show()
         } else {
             val credentials = resultWrapper.requireResult()
-            remoteControlViewModel.retrieveStatistics(credentials.hostname, credentials.md5Credentials)
+            statisticsViewModel.retrieveStatistics(credentials.hostname, credentials.md5Credentials)
         }
     }
 

@@ -1,4 +1,4 @@
-package com.darekbx.sambaclient.ui.remotecontrol
+package com.darekbx.sambaclient.ui.statistics
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -11,7 +11,7 @@ import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class RemoteControl(private val port: Int) {
+class RemoteStatistics(private val port: Int) {
 
     companion object {
         private const val STATISTICS_ENDPOINT = "/statistics"

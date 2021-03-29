@@ -7,7 +7,7 @@
 
         <variable
             name="file"
-            type="com.darekbx.sambaclient.ui.remotecontrol.File" />
+            type="com.darekbx.sambaclient.ui.statistics.File" />
     </data>
 
     <LinearLayout

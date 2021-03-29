@@ -1,4 +1,4 @@
-package com.darekbx.sambaclient.ui.remotecontrol
+package com.darekbx.sambaclient.ui.statistics
 
 class Statistics(
     val usedSpace: Long,

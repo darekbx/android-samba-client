@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
-import com.darekbx.sambaclient.ui.remotecontrol.TypeStatistic
+import com.darekbx.sambaclient.ui.statistics.TypeStatistic
 
 abstract class TypePieChart(context: Context, attributeSet: AttributeSet?) :
     View(context, attributeSet) {

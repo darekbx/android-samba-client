@@ -23,10 +23,16 @@ import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import java.lang.Exception
 
+/**
+ * TODO
+ *  - automatic logic, when remember me is chcked
+ *  - check if active wifi is connected to home wifi (from settings) if yes then use sambe else heroku remote
+ */
 class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
 
     companion object {
         private const val ANIMATION_DURATION = 500L
+        private const val AUTO_LOGIN = true
     }
 
     private val sambaViewModel: SambaViewModel by sharedViewModel()
@@ -69,7 +75,10 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
             }
         }
 
-        fillRememberedAddressAndUser()
+        if (AUTO_LOGIN) {
+        } else {
+            fillRememberedCredentials()
+        }
     }
 
     private fun authenticate() {
@@ -118,7 +127,8 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
             if (rememberCheckBox.isChecked) {
                 val address = authenticationAddress.getSimpleText()
                 val user = authenticationUser.getSimpleText()
-                authPreferences.persist(address, user)
+                val password = authenticationPassword.getSimpleText()
+                authPreferences.persist(address, user, password)
             } else {
                 authPreferences.clearAddressAndUser()
             }
@@ -136,12 +146,13 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
         }
     }
 
-    private fun fillRememberedAddressAndUser() {
+    private fun fillRememberedCredentials() {
         val credentials = authPreferences.read()
         if (credentials.arePersisted) {
             with(binding) {
                 authenticationAddress.editText?.setText(credentials.address)
                 authenticationUser.editText?.setText(credentials.user)
+                authenticationPassword.editText?.setText(credentials.password)
                 rememberCheckBox.isChecked = true
             }
         }
