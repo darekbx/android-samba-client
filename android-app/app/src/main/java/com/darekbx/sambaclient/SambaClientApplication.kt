@@ -11,6 +11,7 @@ import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
 import com.darekbx.sambaclient.ui.viewmodel.StatisticsViewModel
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.ui.viewmodel.UriViewModel
+import com.darekbx.sambaclient.util.UriUtils
 import com.google.gson.Gson
 import com.hierynomus.smbj.SMBClient
 import org.koin.android.ext.koin.androidContext
@@ -27,6 +28,7 @@ class SambaClientApplication : Application() {
         single { SambaClientWrapper(get()) }
         single { AuthPreferences(get()) }
         single { PathMovement() }
+        single { UriUtils(get()) }
         single {
             val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
             EncryptedSharedPreferences.create(

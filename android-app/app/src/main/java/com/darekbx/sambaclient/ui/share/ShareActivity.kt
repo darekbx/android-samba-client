@@ -9,9 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.ActivityShareBinding
 import com.darekbx.sambaclient.preferences.AuthPreferences
-import com.darekbx.sambaclient.ui.viewmodel.ResultWrapper
-import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
-import com.darekbx.sambaclient.ui.viewmodel.UriViewModel
+import com.darekbx.sambaclient.ui.viewmodel.*
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -29,7 +27,7 @@ class ShareActivity : AppCompatActivity() {
     private val binding get() = _binding!!
 
     private var selectedPath = ""
-    private val fileUris = mutableListOf<Uri>()
+    private var fileNamesMap = mapOf<Uri, String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +37,11 @@ class ShareActivity : AppCompatActivity() {
 
         sambaViewModel.autoAuthenticationResult.observe(this, { handleAuthenticationResult(it) })
         sambaViewModel.isLoading.observe(this, { showHideLoadingLayout(it) })
-        uriViewModel.fileNames.observe(this) { displayFilesToShare(it) }
+        sambaViewModel.fileUploadState.observe(this) { handleFileUploadState(it) }
+        uriViewModel.fileNames.observe(this) { handleFileNamesResult(it) }
 
         autoLogin()
         collectShareUris()
-        uriViewModel.retrieveFileNames(fileUris)
 
         binding.buttonCancel.setOnClickListener { finish() }
         binding.buttonShare.setOnClickListener { shareUris() }
@@ -70,6 +68,20 @@ class ShareActivity : AppCompatActivity() {
         }
     }
 
+    private fun handleFileNamesResult(resultWrapper: ResultWrapper<Map<Uri, String>>) {
+        if (resultWrapper.hasError) {
+            displayError(resultWrapper.errorMessage ?: getString(R.string.share_common_error))
+        } else {
+            fileNamesMap = resultWrapper.requireResult()
+            displayFilesToShare(resultWrapper.requireResult().values.toList())
+        }
+    }
+
+    private fun handleFileUploadState(uploadState: FileUploadState) {
+
+
+    }
+
     private fun openDirectorySelectDialog() {
         val dialog = DirectorySelectDialog()
         dialog.onSelect = { path ->
@@ -86,6 +98,7 @@ class ShareActivity : AppCompatActivity() {
     }
 
     private fun collectShareUris() {
+        val fileUris = mutableListOf<Uri>()
         when (intent.action) {
             Intent.ACTION_SEND -> {
                 (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)
@@ -97,6 +110,7 @@ class ShareActivity : AppCompatActivity() {
                     ?.let { uriList -> fileUris.addAll(uriList) }
             }
         }
+        uriViewModel.retrieveFileNames(fileUris)
     }
 
     private fun displayFilesToShare(names: List<String>) {
@@ -104,7 +118,8 @@ class ShareActivity : AppCompatActivity() {
     }
 
     private fun shareUris() {
-        // TODO save uris to selected dir
+        val filesToUpload = fileNamesMap.map { FileToUpload(it.key, it.value) }
+        sambaViewModel.uploadFiles(selectedPath, filesToUpload)
     }
 
     private fun showHideLoadingLayout(isLoading: Boolean) {

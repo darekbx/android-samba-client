@@ -1,5 +1,6 @@
 package com.darekbx.sambaclient.ui.samba
 
+import android.os.FileUtils
 import com.hierynomus.msdtyp.AccessMask
 import com.hierynomus.msfscc.FileAttributes
 import com.hierynomus.msfscc.fileinformation.FileAllInformation
@@ -11,6 +12,8 @@ import com.hierynomus.smbj.SMBClient
 import com.hierynomus.smbj.auth.AuthenticationContext
 import com.hierynomus.smbj.session.Session
 import com.hierynomus.smbj.share.DiskShare
+import java.io.IOException
+import java.io.InputStream
 import java.io.OutputStream
 import java.lang.IllegalStateException
 import java.math.BigInteger
@@ -100,6 +103,20 @@ class SambaClientWrapper(private val smbClient: SMBClient) {
                 setOf(SMB2CreateOptions.FILE_DIRECTORY_FILE)
             )
             ?.close()
+            ?: throw IOException("Directory cannot be created")
+    }
+
+    fun uploadFile(pathToUpload: String, fileName: String, fileInStream: InputStream) {
+        val fullPath = pathToUpload + PATH_DELIMITER + fileName
+        val remoteFile = _diskShare?.openFile(fullPath,
+            setOf(AccessMask.GENERIC_WRITE),
+            null,
+            SMB2ShareAccess.ALL,
+            SMB2CreateDisposition.FILE_OVERWRITE_IF,
+            null) ?: throw IOException("File cannot be created")
+        remoteFile?.outputStream?.use { outStream ->
+            FileUtils.copy(fileInStream, outStream)
+        } ?: throw IOException("Output stream is null")
     }
 
     private fun FileIdBothDirectoryInformation.toSambaFile(): SambaFile {

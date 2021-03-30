@@ -1,16 +1,15 @@
 package com.darekbx.sambaclient.ui.viewmodel
 
 import android.content.ContentResolver
-import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import androidx.annotation.RequiresApi
 import androidx.core.content.contentValuesOf
 import androidx.lifecycle.*
 import com.darekbx.sambaclient.ui.explorer.SortingInfo
 import com.darekbx.sambaclient.ui.samba.Credentials
 import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
 import com.darekbx.sambaclient.ui.samba.SambaFile
+import java.io.IOException
 import java.util.*
 
 class SambaViewModel(
@@ -27,6 +26,7 @@ class SambaViewModel(
     val fileDeleteResult = MutableLiveData<ResultWrapper<Boolean>>()
     val directoryCreateResult = MutableLiveData<ResultWrapper<Boolean>>()
     val credentialsResult = MutableLiveData<ResultWrapper<Credentials>>()
+    val fileUploadState = MutableLiveData<FileUploadState>()
 
     fun authenticate(server: String, user: String? = null, password: String? = null, shareName: String) {
         runIOInViewModelScope {
@@ -104,7 +104,6 @@ class SambaViewModel(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     fun downloadFile(path: String) {
         val outFile = path.substringAfterLast(SambaClientWrapper.PATH_DELIMITER)
         val contentValues = contentValuesOf(
@@ -113,9 +112,6 @@ class SambaViewModel(
         )
         runIOInViewModelScope {
             try {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    throw IllegalStateException("Not supported for Android below 10")
-                }
                 contentResolver.insert(
                     MediaStore.Downloads.EXTERNAL_CONTENT_URI,
                     contentValues
@@ -152,6 +148,21 @@ class SambaViewModel(
             } catch (e: Exception) {
                 e.printStackTrace()
                 directoryCreateResult.postValue(ResultWrapper(e))
+            }
+        }
+    }
+
+    fun uploadFiles(dirToUpload: String, filesToUpload: List<FileToUpload>) {
+        runIOInViewModelScope {
+            for (fileToUpload in filesToUpload) {
+                try {
+                    contentResolver.openInputStream(fileToUpload.uri)?.use { inStream ->
+                        sambaClientWrapper.uploadFile(dirToUpload, fileToUpload.name, inStream)
+                        fileUploadState.postValue(FileUploadState(fileToUpload, true))
+                    } ?: throw IOException("Unable to open stream for $fileToUpload.name")
+                } catch (e: Exception) {
+                    fileUploadState.postValue(FileUploadState(fileToUpload, false, e))
+                }
             }
         }
     }
