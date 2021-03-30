@@ -76,15 +76,19 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
         }
 
         if (AUTO_LOGIN_ENABLED) {
-            val credentials = authPreferences.read()
-            val shareName = authPreferences.readShareName()
-            if (credentials.arePersisted && shareName != null) {
-                with(credentials) {
-                    sambaViewModel.authenticate(address!!, user, password, shareName)
-                }
-            }
+            autoLogin()
         } else {
             fillRememberedCredentials()
+        }
+    }
+
+    private fun autoLogin() {
+        val credentials = authPreferences.read()
+        val shareName = authPreferences.readShareName()
+        if (credentials.arePersisted && shareName != null) {
+            with(credentials) {
+                sambaViewModel.authenticate(address!!, user, password, shareName)
+            }
         }
     }
 

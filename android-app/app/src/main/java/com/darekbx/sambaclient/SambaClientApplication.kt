@@ -10,6 +10,7 @@ import com.darekbx.sambaclient.ui.samba.PathMovement
 import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
 import com.darekbx.sambaclient.ui.viewmodel.StatisticsViewModel
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
+import com.darekbx.sambaclient.ui.viewmodel.UriViewModel
 import com.google.gson.Gson
 import com.hierynomus.smbj.SMBClient
 import org.koin.android.ext.koin.androidContext
@@ -43,6 +44,7 @@ class SambaClientApplication : Application() {
     private val viewModelModule = module {
         viewModel { SambaViewModel(get(), get()) }
         viewModel { StatisticsViewModel(get()) }
+        viewModel { UriViewModel(get()) }
     }
 
     override fun onCreate() {

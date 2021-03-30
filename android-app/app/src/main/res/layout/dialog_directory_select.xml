@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_directory_title"
+        android:paddingStart="@dimen/mediumPadding"
+        android:paddingTop="@dimen/mediumPadding"
+        />
+
+    <TextView
+        android:id="@+id/current_directory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="/development/backup/backup_small"
+        android:paddingStart="@dimen/mediumPadding"
+        android:paddingEnd="@dimen/mediumPadding"
+        android:textStyle="bold"
+        />
+
+    <ListView
+        android:id="@+id/directory_list"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_margin="@dimen/smallPadding"/>
+
+    <include
+        android:id="@+id/loading_layout"
+        layout="@layout/layout_progress" />
+</LinearLayout>

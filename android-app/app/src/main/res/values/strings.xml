@@ -56,4 +56,16 @@
     <string name="type_other">Other %o (%s)</string>
     <string name="biggest_files_title">10 biggest files</string>
 
+    <string name="share_title">Share to Samba</string>
+    <string name="share_doc_title">Document title(s)</string>
+    <string name="share_button_share">Share</string>
+    <string name="share_button_cancel">Cancel</string>
+    <string name="share_location">Location</string>
+    <string name="share_location_default">Share to root directory (&quot;/&quot;)</string>
+    <string name="share_common_error">An unknown error occurred during authentication</string>
+    <string name="share_auth_error">User is not authenticated, please login to the application with remembering credentials</string>
+
+    <string name="select_directory_title">Selected directory</string>
+    <string name="select_directory_create">Select</string>
+
 </resources>
