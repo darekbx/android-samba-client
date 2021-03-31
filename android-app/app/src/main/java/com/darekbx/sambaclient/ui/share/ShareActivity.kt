@@ -10,14 +10,15 @@ import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.ActivityShareBinding
 import com.darekbx.sambaclient.preferences.AuthPreferences
 import com.darekbx.sambaclient.ui.viewmodel.*
+import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
-/**
- * TODO
- *  - upload with progres, can be indeterminate
- */
 class ShareActivity : AppCompatActivity() {
+
+    companion object {
+        private const val UPLOAD_DELAY = 1000L
+    }
 
     private val sambaViewModel: SambaViewModel by viewModel()
     private val authPreferences: AuthPreferences by inject()
@@ -37,14 +38,13 @@ class ShareActivity : AppCompatActivity() {
 
         sambaViewModel.autoAuthenticationResult.observe(this, { handleAuthenticationResult(it) })
         sambaViewModel.isLoading.observe(this, { showHideLoadingLayout(it) })
-        sambaViewModel.fileUploadState.observe(this) { handleFileUploadState(it) }
         uriViewModel.fileNames.observe(this) { handleFileNamesResult(it) }
 
         autoLogin()
         collectShareUris()
 
         binding.buttonCancel.setOnClickListener { finish() }
-        binding.buttonShare.setOnClickListener { shareUris() }
+        binding.buttonShare.setOnClickListener { executeShare() }
         binding.documentLocation.setOnClickListener { openDirectorySelectDialog() }
     }
 
@@ -75,11 +75,6 @@ class ShareActivity : AppCompatActivity() {
             fileNamesMap = resultWrapper.requireResult()
             displayFilesToShare(resultWrapper.requireResult().values.toList())
         }
-    }
-
-    private fun handleFileUploadState(uploadState: FileUploadState) {
-
-
     }
 
     private fun openDirectorySelectDialog() {
@@ -117,9 +112,23 @@ class ShareActivity : AppCompatActivity() {
         binding.documentTitle.text = names.joinToString(", ")
     }
 
-    private fun shareUris() {
+    private fun executeShare() {
+        val uploadDialog = UploadDialog()
+        uploadDialog.onDismissed = { finish() }
+        uploadDialog.showNow(supportFragmentManager, UploadDialog::class.java.simpleName)
+
         val filesToUpload = fileNamesMap.map { FileToUpload(it.key, it.value) }
-        sambaViewModel.uploadFiles(selectedPath, filesToUpload)
+        uploadDialog.addStates(filesToUpload)
+
+        sambaViewModel.fileUploadState.observe(this, { uploadDialog.updateState(it) })
+        sambaViewModel.fileUploadCompleted.observe(this, { uploadDialog.notifyUploadCompleted() })
+
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(UPLOAD_DELAY)
+            withContext(Dispatchers.Main) {
+                sambaViewModel.uploadFiles(selectedPath, filesToUpload)
+            }
+        }
     }
 
     private fun showHideLoadingLayout(isLoading: Boolean) {

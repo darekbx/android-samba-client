@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="uploadState"
+            type="com.darekbx.sambaclient.ui.viewmodel.FileUploadState" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/smallPadding">
+
+        <TextView
+            android:id="@+id/document_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/largePadding"
+            android:paddingStart="@dimen/smallPadding"
+            android:paddingEnd="@dimen/smallPadding"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="@{uploadState.fileToUpload.name}"
+            tools:text="document.doc"
+            />
+        <ProgressBar
+            android:id="@+id/upload_progress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/document_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:indeterminate="true"
+            android:paddingStart="@dimen/smallPadding"
+            android:paddingEnd="@dimen/smallPadding"
+            app:isInvisible="@{uploadState.progressInvisible}"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            />
+        <ImageView
+            android:id="@+id/success_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/document_name"
+            app:layout_constraintBottom_toBottomOf="@id/document_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/ic_success"
+            app:isInvisible="@{uploadState.uploadedImageInvisible}"
+            />
+        <ImageView
+            android:id="@+id/error_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/document_name"
+            app:layout_constraintBottom_toBottomOf="@id/document_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/ic_error"
+            app:isInvisible="@{uploadState.errorImageInvisible}"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

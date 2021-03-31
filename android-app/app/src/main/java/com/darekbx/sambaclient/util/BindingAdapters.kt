@@ -25,7 +25,12 @@ fun TextView.setFileSize(fileSize: Long) {
     text = Formatter.formatFileSize(context, fileSize)
 }
 
-@BindingAdapter("isVisible")
-fun TextView.isVisible(isVisible: Boolean) {
-    visibility = if (isVisible) View.VISIBLE else View.GONE
+@BindingAdapter("isInvisible")
+fun View.isInvisible(isInvisible: Boolean) {
+    visibility = if (isInvisible) View.INVISIBLE else View.VISIBLE
+}
+
+@BindingAdapter("isGone")
+fun View.isGone(isGone: Boolean) {
+    visibility = if (isGone) View.GONE else View.VISIBLE
 }

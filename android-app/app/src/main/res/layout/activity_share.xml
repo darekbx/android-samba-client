@@ -10,66 +10,66 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/mediumPadding"
-        android:paddingEnd="@dimen/mediumPadding"
         android:paddingTop="@dimen/mediumPadding"
+        android:paddingEnd="@dimen/mediumPadding"
         android:text="@string/share_doc_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/document_title"
-        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/mediumPadding"
-        android:paddingEnd="@dimen/mediumPadding"
         android:paddingTop="@dimen/smallPadding"
+        android:paddingEnd="@dimen/mediumPadding"
+        android:textColor="@color/black"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/document_title_label"
-        tools:text="document.txt" />
+        tools:text="Document.txt" />
 
     <TextView
         android:id="@+id/document_location_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/mediumPadding"
-        android:paddingEnd="@dimen/mediumPadding"
         android:paddingTop="@dimen/largePadding"
+        android:paddingEnd="@dimen/mediumPadding"
         android:text="@string/share_location"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/document_title" />
 
     <TextView
         android:id="@+id/document_location"
-        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/mediumPadding"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:paddingEnd="@dimen/mediumPadding"
-        android:paddingTop="@dimen/smallPadding"
-        android:paddingBottom="@dimen/mediumPadding"
-        android:text="@string/share_location_default"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/document_location_label"
         android:drawableEnd="@drawable/ic_chevron_right"
         android:drawablePadding="@dimen/largePadding"
-        />
+        android:paddingStart="@dimen/mediumPadding"
+        android:paddingTop="@dimen/smallPadding"
+        android:paddingEnd="@dimen/mediumPadding"
+        android:paddingBottom="@dimen/mediumPadding"
+        android:text="@string/share_location_default"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/document_location_label" />
 
     <TextView
         android:id="@+id/share_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center"
         android:padding="@dimen/largePadding"
         android:textColor="@color/error_color"
-        style="@style/TextAppearance.AppCompat.Medium"
-        tools:text="@string/share_auth_error"
-        />
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/share_auth_error" />
 
     <Button
         android:id="@+id/button_cancel"
@@ -86,8 +86,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/smallPadding"
-        android:text="@string/share_button_share"
         android:enabled="false"
+        android:text="@string/share_button_share"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/button_cancel" />

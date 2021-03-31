@@ -48,7 +48,7 @@
             android:paddingEnd="@dimen/smallPadding"
             android:textStyle="bold"
             app:fileSize="@{file.size}"
-            app:isVisible="@{!file.directory}"
+            app:isGone="@{file.directory}"
             tools:text="256KB" />
 
         <TextView
@@ -59,7 +59,7 @@
             android:layout_gravity="center_vertical"
             android:paddingEnd="@dimen/smallPadding"
             app:dateTime="@{file.changeTime}"
-            app:isVisible="@{!file.directory}"
+            app:isGone="@{file.directory}"
             tools:text="2021-05-25 15:13:00" />
 
     </LinearLayout>

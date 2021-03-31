@@ -13,7 +13,6 @@ import com.darekbx.sambaclient.ui.samba.PathMovement
 import com.darekbx.sambaclient.ui.samba.SambaFile
 import com.darekbx.sambaclient.ui.viewmodel.ResultWrapper
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
-import com.darekbx.sambaclient.ui.viewmodel.UriViewModel
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 

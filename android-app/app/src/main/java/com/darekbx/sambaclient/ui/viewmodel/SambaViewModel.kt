@@ -3,12 +3,14 @@ package com.darekbx.sambaclient.ui.viewmodel
 import android.content.ContentResolver
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.core.content.contentValuesOf
 import androidx.lifecycle.*
 import com.darekbx.sambaclient.ui.explorer.SortingInfo
 import com.darekbx.sambaclient.ui.samba.Credentials
 import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
 import com.darekbx.sambaclient.ui.samba.SambaFile
+import kotlinx.coroutines.delay
 import java.io.IOException
 import java.util.*
 
@@ -16,6 +18,10 @@ class SambaViewModel(
     private val sambaClientWrapper: SambaClientWrapper,
     private val contentResolver: ContentResolver
 ) : LoadingViewModel(), LifecycleObserver {
+
+    companion object {
+        private const val UPLOAD_ACTION_DELAY = 500L
+    }
 
     val authenticationResult = MutableLiveData<ResultWrapper<Boolean>>()
     val autoAuthenticationResult = MutableLiveData<ResultWrapper<Boolean>>()
@@ -27,6 +33,7 @@ class SambaViewModel(
     val directoryCreateResult = MutableLiveData<ResultWrapper<Boolean>>()
     val credentialsResult = MutableLiveData<ResultWrapper<Credentials>>()
     val fileUploadState = MutableLiveData<FileUploadState>()
+    val fileUploadCompleted = MutableLiveData<Boolean>()
 
     fun authenticate(server: String, user: String? = null, password: String? = null, shareName: String) {
         runIOInViewModelScope {
@@ -156,14 +163,22 @@ class SambaViewModel(
         runIOInViewModelScope {
             for (fileToUpload in filesToUpload) {
                 try {
+                    // Notify upload started
+                    fileUploadState.postValue(FileUploadState(fileToUpload, false))
                     contentResolver.openInputStream(fileToUpload.uri)?.use { inStream ->
                         sambaClientWrapper.uploadFile(dirToUpload, fileToUpload.name, inStream)
+                        // Notify upload completed, delay is for better ux experience
+                        delay(UPLOAD_ACTION_DELAY)
                         fileUploadState.postValue(FileUploadState(fileToUpload, true))
                     } ?: throw IOException("Unable to open stream for $fileToUpload.name")
                 } catch (e: Exception) {
+                    e.printStackTrace()
+                    // Notify upload error, delay is for better ux experience
+                    delay(UPLOAD_ACTION_DELAY)
                     fileUploadState.postValue(FileUploadState(fileToUpload, false, e))
                 }
             }
+            fileUploadCompleted.postValue(true)
         }
     }
 

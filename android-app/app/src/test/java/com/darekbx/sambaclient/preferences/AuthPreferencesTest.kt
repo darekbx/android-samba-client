@@ -23,7 +23,7 @@ class AuthPreferencesTest {
     @Test
     fun `Values were persisted`() {
         // Given
-        authPreferences.persist("Address", "User")
+        authPreferences.persist("Address", "User", "Password")
 
         // When
         val credentials = authPreferences.read()
@@ -32,12 +32,13 @@ class AuthPreferencesTest {
         assertTrue(credentials.arePersisted)
         assertEquals("Address", credentials.address)
         assertEquals("User", credentials.user)
+        assertEquals("Password", credentials.password)
     }
 
     @Test
     fun `Values were cleared`() {
         // Given
-        authPreferences.persist("Address", "User")
+        authPreferences.persist("Address", "User", "Password")
         val credentials = authPreferences.read()
         assertTrue(credentials.arePersisted)
 
@@ -49,5 +50,6 @@ class AuthPreferencesTest {
         assertFalse(clearedCredentials.arePersisted)
         assertNull(clearedCredentials.address)
         assertNull(clearedCredentials.user)
+        assertNull(clearedCredentials.password)
     }
 }

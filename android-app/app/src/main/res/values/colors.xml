@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="loading_background">#6000</color>
     <color name="error_color">#ef5350</color>
+    <color name="success_color">#66bb6a</color>
 
     <color name="chart_doc">#42a5f5</color>
     <color name="chart_image">#66bb6a</color>

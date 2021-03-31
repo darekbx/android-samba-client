@@ -28,7 +28,12 @@ class SambaClientWrapper(private val smbClient: SMBClient) {
     private var _session: Session? = null
     private var _diskShare: DiskShare? = null
 
-    fun authenticate(server: String, user: String? = null, password: String? = null, shareName: String) {
+    fun authenticate(
+        server: String,
+        user: String? = null,
+        password: String? = null,
+        shareName: String
+    ) {
         authenticate(server, user, password)
         connectToDiskShare(shareName)
     }
@@ -90,9 +95,7 @@ class SambaClientWrapper(private val smbClient: SMBClient) {
     }
 
     fun createDirectory(path: String, newDirectoryName: String) {
-        val newDirPath =
-            if (path.isEmpty()) newDirectoryName
-            else path + PATH_DELIMITER + newDirectoryName
+        val newDirPath = mergePath(path, newDirectoryName)
         _diskShare
             ?.openDirectory(
                 newDirPath,
@@ -107,17 +110,23 @@ class SambaClientWrapper(private val smbClient: SMBClient) {
     }
 
     fun uploadFile(pathToUpload: String, fileName: String, fileInStream: InputStream) {
-        val fullPath = pathToUpload + PATH_DELIMITER + fileName
-        val remoteFile = _diskShare?.openFile(fullPath,
+        val fullPath = mergePath(pathToUpload, fileName)
+        val remoteFile = _diskShare?.openFile(
+            fullPath,
             setOf(AccessMask.GENERIC_WRITE),
             null,
             SMB2ShareAccess.ALL,
             SMB2CreateDisposition.FILE_OVERWRITE_IF,
-            null) ?: throw IOException("File cannot be created")
-        remoteFile?.outputStream?.use { outStream ->
+            null
+        ) ?: throw IOException("File cannot be created")
+        remoteFile.outputStream?.use { outStream ->
             FileUtils.copy(fileInStream, outStream)
         } ?: throw IOException("Output stream is null")
     }
+
+    private fun mergePath(path: String, file: String) =
+        if (path.isEmpty()) file
+        else path + PATH_DELIMITER + file
 
     private fun FileIdBothDirectoryInformation.toSambaFile(): SambaFile {
         return SambaFile(
