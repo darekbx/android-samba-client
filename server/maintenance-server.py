@@ -10,8 +10,19 @@ class Maintenence:
 
     SHARE_PATH = ".share_path"
 
-    def createStatistics(self):
-        used_space = self._usedSpace()
+    def createStatistics(self, sub_dir = ""):
+        used_space = self._usedSpace(sub_dir)
+        if len(sub_dir) > 0:
+            dir_count, file_count = self._dir_counts(sub_dir)
+            created_time, modified_time = self._dir_times(sub_dir)
+            return {
+                "usedSpace": used_space,
+                "directoryCount": dir_count,
+                "filesCount": file_count,
+                "createdTime": created_time,
+                "modifiedTime": modified_time
+            }
+        
         return {
             "usedSpace": used_space,
             "totalSpace": self._totalSpace(used_space),
@@ -20,8 +31,8 @@ class Maintenence:
             "typeStatistics": self._typeStatistics()
         }
 
-    def _usedSpace(self):
-        root_directory = Path(self._read_share_path())
+    def _usedSpace(self, sub_dir = ""):
+        root_directory = Path(os.path.join(self._read_share_path(), sub_dir))
         return sum(f.stat().st_size for f in root_directory.glob('**/*') if f.is_file())
 
     # Total space for data
@@ -90,6 +101,21 @@ class Maintenence:
             { "fileType": "other", **others }
         ]
 
+    def _dir_counts(self, sub_dir):
+        root_directory = Path(os.path.join(self._read_share_path(), sub_dir))
+        dir_count = 0
+        file_count = 0
+        for f in root_directory.glob('**/*'):
+            if f.is_dir():
+                dir_count = dir_count + 1
+            elif f.is_file():
+                file_count = file_count + 1
+        return dir_count, file_count
+
+    def _dir_times(self, sub_dir):
+        root_directory = Path(os.path.join(self._read_share_path(), sub_dir))
+        return round(os.stat(root_directory).st_ctime * 1000), round(os.stat(root_directory).st_mtime * 1000)
+
     def _read_share_path(self):
         with open(self.SHARE_PATH, "r") as handle:
             return handle.read().strip()
@@ -114,8 +140,13 @@ class MaintenanceServer(BaseHTTPRequestHandler):
         if md5Authorization != validToken:
             self._end_with_401()
             return
+        
+        statistics_dir = ""
+        query = parse_qs(url.query)
+        if "path" in query:
+            statistics_dir = query["path"][0]
 
-        statistics = self._maintenence.createStatistics()
+        statistics = self._maintenence.createStatistics(statistics_dir)
         response = json.dumps(statistics)
 
         self.send_response(200)

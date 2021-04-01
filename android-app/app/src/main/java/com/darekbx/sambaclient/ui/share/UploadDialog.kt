@@ -7,8 +7,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.DialogUploadBinding
-import com.darekbx.sambaclient.ui.viewmodel.FileToUpload
-import com.darekbx.sambaclient.ui.viewmodel.FileUploadState
+import com.darekbx.sambaclient.ui.viewmodel.model.FileToUpload
+import com.darekbx.sambaclient.ui.viewmodel.model.FileUploadState
 
 class UploadDialog : DialogFragment() {
 

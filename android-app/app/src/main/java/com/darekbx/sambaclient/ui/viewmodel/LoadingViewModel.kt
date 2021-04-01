@@ -2,23 +2,25 @@ package com.darekbx.sambaclient.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
-open class LoadingViewModel: ViewModel() {
+open class LoadingViewModel : ViewModel() {
 
     val isLoading = MutableLiveData<Boolean>()
 
-    protected  fun <T> runIOInViewModelScope(callback: suspend CoroutineScope.() -> T) {
+    private val viewModelJob = SupervisorJob()
+    protected val ioScope = CoroutineScope(Dispatchers.IO + viewModelJob)
+
+    protected fun <T> runIOInViewModelScope(callback: suspend CoroutineScope.() -> T) {
         isLoading.postValue(true)
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                callback()
-                isLoading.postValue(false)
-            }
+        ioScope.launch {
+            callback()
+            isLoading.postValue(false)
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
     }
 }

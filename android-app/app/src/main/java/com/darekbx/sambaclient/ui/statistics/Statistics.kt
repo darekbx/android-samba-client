@@ -1,5 +1,13 @@
 package com.darekbx.sambaclient.ui.statistics
 
+class SubDirStatistics(
+    val usedSpace: Long,
+    val directoryCount: Int,
+    val filesCount: Int,
+    val createdTime: Long,
+    val modifiedTime: Long
+)
+
 class Statistics(
     val usedSpace: Long,
     val totalSpace: Long,

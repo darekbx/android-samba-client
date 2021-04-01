@@ -2,6 +2,7 @@ package com.darekbx.sambaclient.ui.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
+import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
 import com.darekbx.sambaclient.util.UriUtils
 import java.lang.IllegalStateException
 

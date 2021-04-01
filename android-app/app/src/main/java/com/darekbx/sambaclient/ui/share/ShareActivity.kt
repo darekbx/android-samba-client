@@ -10,6 +10,8 @@ import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.ActivityShareBinding
 import com.darekbx.sambaclient.preferences.AuthPreferences
 import com.darekbx.sambaclient.ui.viewmodel.*
+import com.darekbx.sambaclient.ui.viewmodel.model.FileToUpload
+import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel

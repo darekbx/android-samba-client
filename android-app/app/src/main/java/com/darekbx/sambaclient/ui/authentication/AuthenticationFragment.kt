@@ -14,7 +14,7 @@ import com.darekbx.sambaclient.BuildConfig
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.FragmentAuthenticationBinding
 import com.darekbx.sambaclient.preferences.AuthPreferences
-import com.darekbx.sambaclient.ui.viewmodel.ResultWrapper
+import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import com.google.android.material.textfield.TextInputLayout

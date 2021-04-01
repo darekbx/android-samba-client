@@ -1,4 +1,4 @@
-package com.darekbx.sambaclient.ui.viewmodel
+package com.darekbx.sambaclient.ui.viewmodel.model
 
 class ResultWrapper<T>(val result: T?, val exception: Exception? = null) {
     val hasError = exception != null

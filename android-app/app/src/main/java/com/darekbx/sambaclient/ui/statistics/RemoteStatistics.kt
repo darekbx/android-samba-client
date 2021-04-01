@@ -19,6 +19,19 @@ class RemoteStatistics(private val port: Int) {
 
     suspend fun retrieveStatistics(
         maintenanceServerAddress: String,
+        md5Credentials: String,
+        subDir: String
+    ): SubDirStatistics {
+        return suspendCoroutine { continuation ->
+            val query = "?path=$subDir"
+            val url = "http://$maintenanceServerAddress:$port$STATISTICS_ENDPOINT$query"
+            val statistics = downloadObject<SubDirStatistics>(url, md5Credentials)
+            continuation.resume(statistics)
+        }
+    }
+
+    suspend fun retrieveStatistics(
+        maintenanceServerAddress: String,
         md5Credentials: String
     ): Statistics {
         return suspendCoroutine { continuation ->

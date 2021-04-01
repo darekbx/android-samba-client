@@ -14,7 +14,7 @@ import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.FragmentFileBinding
 import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
 import com.darekbx.sambaclient.ui.samba.SambaFile
-import com.darekbx.sambaclient.ui.viewmodel.ResultWrapper
+import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import com.darekbx.sambaclient.util.setDateTime
@@ -37,7 +37,6 @@ class FileFragment : Fragment(R.layout.fragment_file) {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFileBinding.inflate(inflater, container, false)
-        setHasOptionsMenu(true)
         return binding.root
     }
 

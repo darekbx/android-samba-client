@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
@@ -18,18 +20,14 @@ import com.darekbx.sambaclient.databinding.FragmentFileExplorerBinding
 import com.darekbx.sambaclient.ui.explorer.SortingInfo.Companion.toSortingInfo
 import com.darekbx.sambaclient.ui.samba.PathMovement
 import com.darekbx.sambaclient.ui.samba.SambaFile
-import com.darekbx.sambaclient.ui.viewmodel.ResultWrapper
+import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
-/**
- * TODO
- * - open dir -> forward (details: name, dates, size with files, like on google drive, delete with files)
- * - add file - by file sharing like in google drive (seems a lot of work)
- */
-class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
+class FileExplorerFragment :
+    Fragment(R.layout.fragment_file_explorer), DrawerLayout.DrawerListener {
 
     companion object {
         private const val SORT_INFO_BUNDLE_KEY = "eRn8Q5U5"
@@ -51,6 +49,7 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
         requireActivity().onBackPressedDispatcher.addCallback(this, object :
             OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                if (closeDrawer()) return
                 if (!goUp()) {
                     // Went to the root, close app
                     requireActivity().finish()
@@ -93,6 +92,7 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
         sambaViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
 
         binding.buttonAdd.setOnClickListener { openCreateDirectoryDialog() }
+        binding.root.addDrawerListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -122,6 +122,16 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    override fun onDrawerOpened(drawerView: View) {
+        refreshDirectoryDetails()
+    }
+
+    override fun onDrawerClosed(drawerView: View) { }
+
+    override fun onDrawerSlide(drawerView: View, slideOffset: Float) { }
+
+    override fun onDrawerStateChanged(newState: Int) { }
 
     private fun openSortingDialog() {
         val dialog = SortingDialog()
@@ -174,6 +184,13 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
         } else {
             scrollListToTop()
             activeAdapter.swapData(resultWrapper.requireResult())
+        }
+    }
+
+    private fun refreshDirectoryDetails() {
+        childFragmentManager.fragments.find { it is DirectoryDetailsFragment }?.let { fragment ->
+            val currentPath = pathMovement.currentPath()
+            (fragment as DirectoryDetailsFragment).loadDetailsForDirectory(currentPath)
         }
     }
 
@@ -234,6 +251,14 @@ class FileExplorerFragment : Fragment(R.layout.fragment_file_explorer) {
                 root: ViewGroup
             ) = AdapterSambaGridFileBinding.inflate(inflater, root, false)
         }
+    }
+
+    private fun closeDrawer(): Boolean {
+        if (binding.root.isDrawerOpen(GravityCompat.END)) {
+            binding.root.closeDrawers()
+            return true
+        }
+        return false
     }
 
     private val showAsList: Boolean

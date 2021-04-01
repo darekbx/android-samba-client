@@ -11,7 +11,7 @@ import com.darekbx.sambaclient.databinding.DialogDirectorySelectBinding
 import com.darekbx.sambaclient.ui.explorer.SortingInfo
 import com.darekbx.sambaclient.ui.samba.PathMovement
 import com.darekbx.sambaclient.ui.samba.SambaFile
-import com.darekbx.sambaclient.ui.viewmodel.ResultWrapper
+import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel

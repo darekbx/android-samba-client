@@ -1,4 +1,4 @@
-package com.darekbx.sambaclient.ui.viewmodel
+package com.darekbx.sambaclient.ui.viewmodel.model
 
 import android.net.Uri
 

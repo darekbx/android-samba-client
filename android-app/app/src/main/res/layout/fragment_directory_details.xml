@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/largePadding"
+        android:src="@drawable/ic_folder"
+        />
+
+    <TextView
+        android:id="@+id/dir_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="@dimen/mediumPadding"
+        android:textSize="16sp"
+        tools:text="/companies"
+        />
+
+    <TextView
+        android:id="@+id/used_space_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/dir_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/dirInfoLabel"
+        android:text="@string/directory_details_size"
+        />
+    <TextView
+        android:id="@+id/used_space"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/used_space_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingStart="@dimen/mediumPadding"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="123.05MB"
+        />
+
+    <TextView
+        android:id="@+id/counts_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/used_space"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/mediumPadding"
+        android:text="@string/directory_details_count"
+        style="@style/dirInfoLabel"
+        />
+    <TextView
+        android:id="@+id/counts"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/counts_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingStart="@dimen/mediumPadding"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="3 / 52"
+        />
+
+    <TextView
+        android:id="@+id/created_time_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/counts"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/mediumPadding"
+        style="@style/dirInfoLabel"
+        android:text="@string/directory_details_created"
+        />
+    <TextView
+        android:id="@+id/created_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/created_time_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingStart="@dimen/mediumPadding"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="2021-03-21 12:00"
+        />
+
+    <TextView
+        android:id="@+id/modified_time_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/created_time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/mediumPadding"
+        style="@style/dirInfoLabel"
+        android:text="@string/directory_details_modified"
+        />
+    <TextView
+        android:id="@+id/modified_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/modified_time_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingStart="@dimen/mediumPadding"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:text="2021-03-31 12:00"
+        />
+
+    <include
+        android:id="@+id/loading_layout"
+        layout="@layout/layout_progress" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

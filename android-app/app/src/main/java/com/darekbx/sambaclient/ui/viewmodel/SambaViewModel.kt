@@ -3,13 +3,15 @@ package com.darekbx.sambaclient.ui.viewmodel
 import android.content.ContentResolver
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import androidx.core.content.contentValuesOf
 import androidx.lifecycle.*
 import com.darekbx.sambaclient.ui.explorer.SortingInfo
 import com.darekbx.sambaclient.ui.samba.Credentials
 import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
 import com.darekbx.sambaclient.ui.samba.SambaFile
+import com.darekbx.sambaclient.ui.viewmodel.model.FileToUpload
+import com.darekbx.sambaclient.ui.viewmodel.model.FileUploadState
+import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
 import kotlinx.coroutines.delay
 import java.io.IOException
 import java.util.*

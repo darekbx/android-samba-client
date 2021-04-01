@@ -72,4 +72,12 @@
     <string name="upload_completed">Uploaded!</string>
     <string name="upload_close">Close</string>
 
+    <string name="directory_details_size">Directory size</string>
+    <string name="directory_details_count">Directories / files count</string>
+    <string name="directory_details_created">Created time</string>
+    <string name="directory_details_modified">Modified time</string>
+    <string name="directory_details_counts_format">%o / %o</string>
+    <string name="directory_details_dir_format">/%s</string>
+
+
 </resources>

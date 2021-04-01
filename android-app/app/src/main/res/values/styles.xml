@@ -24,4 +24,13 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="dirInfoLabel">
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingStart">@dimen/mediumPadding</item>
+    </style>
+    <style name="dirInfoValue">
+        <item name="android:textSize">12sp</item>
+        <item name="android:paddingStart">@dimen/mediumPadding</item>
+    </style>
+
 </resources>
