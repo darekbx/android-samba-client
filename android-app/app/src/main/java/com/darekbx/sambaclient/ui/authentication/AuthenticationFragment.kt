@@ -1,13 +1,17 @@
 package com.darekbx.sambaclient.ui.authentication
 
+import android.Manifest
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.darekbx.sambaclient.BuildConfig
@@ -16,6 +20,8 @@ import com.darekbx.sambaclient.databinding.FragmentAuthenticationBinding
 import com.darekbx.sambaclient.preferences.AuthPreferences
 import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
+import com.darekbx.sambaclient.util.PermissionRequester
+import com.darekbx.sambaclient.util.WifiUtils
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import com.google.android.material.textfield.TextInputLayout
 import com.hierynomus.mssmb2.SMBApiException
@@ -23,10 +29,6 @@ import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import java.lang.Exception
 
-/**
- * TODO
- *  - check if active wifi is connected to home wifi (from settings) if yes then use sambe else heroku remote
- */
 class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
 
     companion object {
@@ -36,6 +38,7 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
 
     private val sambaViewModel: SambaViewModel by sharedViewModel()
     private val authPreferences: AuthPreferences by inject()
+    private val wifiUtils: WifiUtils by inject()
 
     private var _binding: FragmentAuthenticationBinding? = null
     private val binding get() = _binding!!
@@ -75,11 +78,33 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
             }
         }
 
-        if (AUTO_LOGIN_ENABLED) {
-            autoLogin()
-        } else {
-            fillRememberedCredentials()
+        permissionRequester.runWithPermissions {
+
+            if (shouldVerifyLocalNetwork() && !isInLocalNetwork()) {
+                AlertDialog.Builder(requireContext())
+                    .setMessage(R.string.app_name)
+                    .setMessage(R.string.authentication_please_use_remote_access)
+                    .setPositiveButton(R.string.button_ok, { _, _ ->
+                        activity?.finish()
+                    })
+                    .show()
+                return@runWithPermissions
+            }
+
+            if (AUTO_LOGIN_ENABLED) {
+                autoLogin()
+            } else {
+                fillRememberedCredentials()
+            }
         }
+    }
+
+    private fun shouldVerifyLocalNetwork() = localNetworkSsid != null && localNetworkSsid != ""
+
+    private fun isInLocalNetwork(): Boolean {
+        val connectedSsid = wifiUtils.connectedSsid()?.replace("\"", "")
+        return if (connectedSsid.isNullOrEmpty()) false
+        else localNetworkSsid == connectedSsid
     }
 
     private fun autoLogin() {
@@ -277,5 +302,31 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
             true -> View.VISIBLE
             else -> View.GONE
         }
+    }
+
+    private val permissionRequester by lazy {
+        PermissionRequester(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            onDenied = { showRationale() },
+            onShowRationale = { showDeniedPermissionInformation() }
+        )
+    }
+
+    private fun showRationale() {
+        Toast.makeText(requireContext(), R.string.location_permission_rationale, Toast.LENGTH_SHORT)
+            .show()
+    }
+
+    private fun showDeniedPermissionInformation() {
+        Toast.makeText(requireContext(), R.string.location_permission_denied, Toast.LENGTH_SHORT)
+            .show()
+    }
+
+    private val localNetworkSsid: String?
+        get() = settingsPreferences.getString("local_network_ssid", null)
+
+    private val settingsPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(requireContext())
     }
 }

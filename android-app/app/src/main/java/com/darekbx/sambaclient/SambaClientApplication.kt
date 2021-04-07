@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.darekbx.sambaclient.preferences.AuthPreferences
+import com.darekbx.sambaclient.system.AndroidWifiManager
 import com.darekbx.sambaclient.ui.statistics.RemoteStatistics
 import com.darekbx.sambaclient.ui.samba.PathMovement
 import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
@@ -12,6 +13,7 @@ import com.darekbx.sambaclient.ui.viewmodel.StatisticsViewModel
 import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.ui.viewmodel.UriViewModel
 import com.darekbx.sambaclient.util.UriUtils
+import com.darekbx.sambaclient.util.WifiUtils
 import com.google.gson.Gson
 import com.hierynomus.smbj.SMBClient
 import org.koin.android.ext.koin.androidContext
@@ -41,6 +43,8 @@ class SambaClientApplication : Application() {
         }
         single { (get() as Context).contentResolver }
         single { Gson() }
+        single { AndroidWifiManager(get()) }
+        single { WifiUtils(get()) }
     }
 
     private val viewModelModule = module {

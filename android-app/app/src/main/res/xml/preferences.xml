@@ -15,4 +15,13 @@
             />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/prefereces_other">
+        <EditTextPreference
+            android:key="local_network_ssid"
+            android:title="@string/prefereces_home_ssid"
+            android:summary="@string/prefereces_home_ssid_summary"
+            />
+    </PreferenceCategory>
+
 </PreferenceScreen>

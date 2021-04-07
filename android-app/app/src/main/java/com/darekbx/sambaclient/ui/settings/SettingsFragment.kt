@@ -25,6 +25,9 @@ class SettingsFragment: PreferenceFragmentCompat(),
             if (!preferences.contains("grid_columns_count")) {
                 putInt("grid_columns_count", BuildConfig.GRID_COLUMNS_COUNT)
             }
+            if (!preferences.contains("local_network_ssid")) {
+                putString("local_network_ssid", null)
+            }
             apply()
         }
     }

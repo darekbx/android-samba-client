@@ -17,6 +17,8 @@
     <string name="button_use_share">Use share name</string>
     <string name="remember_address_and_user">Remember address and user</string>
     <string name="remember_share_name">Remember share name</string>
+    <string name="authentication_please_use_remote_access">Remote access is not available in current version. Please connect to local network SSID and open application again.</string>
+    <string name="button_ok">OK</string>
 
     <string name="menu_sort_options">Sort options</string>
     <string name="menu_settings">Settings</string>
@@ -39,6 +41,9 @@
     <string name="prefereces_show_as_list">Show as list</string>
     <string name="prefereces_show_as_list_summary">Display files list as list or grid</string>
     <string name="prefereces_grid_columns_count">Grid columns count</string>
+    <string name="prefereces_other">Other</string>
+    <string name="prefereces_home_ssid">Home SSID</string>
+    <string name="prefereces_home_ssid_summary">Set Home wifi SSID, when using Samba from local network. Leave empty, when using Samba from static IP.</string>
 
     <string name="file_download">Download</string>
     <string name="file_open">Open</string>
@@ -79,5 +84,7 @@
     <string name="directory_details_counts_format">%o / %o</string>
     <string name="directory_details_dir_format">/%s</string>
 
+    <string name="location_permission_denied">Location permissions are denied.</string>
+    <string name="location_permission_rationale">Please allow location permissions.</string>
 
 </resources>
