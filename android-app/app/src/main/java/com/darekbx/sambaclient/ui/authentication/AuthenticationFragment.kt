@@ -79,23 +79,26 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
         }
 
         permissionRequester.runWithPermissions {
+            initializeAuthentication()
+        }
+    }
 
-            if (shouldVerifyLocalNetwork() && !isInLocalNetwork()) {
-                AlertDialog.Builder(requireContext())
-                    .setMessage(R.string.app_name)
-                    .setMessage(R.string.authentication_please_use_remote_access)
-                    .setPositiveButton(R.string.button_ok, { _, _ ->
-                        activity?.finish()
-                    })
-                    .show()
-                return@runWithPermissions
-            }
+    private fun initializeAuthentication() {
+        if (shouldVerifyLocalNetwork() && !isInLocalNetwork()) {
+            AlertDialog.Builder(requireContext())
+                .setMessage(R.string.app_name)
+                .setMessage(R.string.authentication_please_use_remote_access)
+                .setPositiveButton(R.string.button_ok) { _, _ ->
+                    activity?.finish()
+                }
+                .show()
+            return
+        }
 
-            if (AUTO_LOGIN_ENABLED) {
-                autoLogin()
-            } else {
-                fillRememberedCredentials()
-            }
+        if (AUTO_LOGIN_ENABLED) {
+            autoLogin()
+        } else {
+            fillRememberedCredentials()
         }
     }
 
