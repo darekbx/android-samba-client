@@ -1,4 +1,4 @@
-package com.darekbx.sambaclient.ui.samba
+package com.darekbx.sambaclient.samba
 
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.AfterEach

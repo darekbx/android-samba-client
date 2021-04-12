@@ -9,11 +9,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.FragmentDirectoryDetailsBinding
-import com.darekbx.sambaclient.ui.samba.Credentials
-import com.darekbx.sambaclient.ui.statistics.SubDirStatistics
-import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
-import com.darekbx.sambaclient.ui.viewmodel.StatisticsViewModel
-import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
+import com.darekbx.sambaclient.samba.Credentials
+import com.darekbx.sambaclient.statistics.SubDirStatistics
+import com.darekbx.sambaclient.viewmodel.SambaViewModel
+import com.darekbx.sambaclient.viewmodel.StatisticsViewModel
+import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import com.darekbx.sambaclient.util.setDateTime
 import org.koin.android.viewmodel.ext.android.viewModel

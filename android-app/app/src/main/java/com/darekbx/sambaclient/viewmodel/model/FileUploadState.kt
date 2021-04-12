@@ -1,4 +1,4 @@
-package com.darekbx.sambaclient.ui.viewmodel.model
+package com.darekbx.sambaclient.viewmodel.model
 
 import java.lang.Exception
 

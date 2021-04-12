@@ -1,7 +1,7 @@
 package com.darekbx.sambaclient.ui.explorer
 
 import androidx.recyclerview.widget.RecyclerView
-import com.darekbx.sambaclient.ui.samba.SambaFile
+import com.darekbx.sambaclient.samba.SambaFile
 
 abstract class BaseSambaFileAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

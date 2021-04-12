@@ -12,10 +12,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.FragmentFileBinding
-import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
-import com.darekbx.sambaclient.ui.samba.SambaFile
-import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
-import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
+import com.darekbx.sambaclient.samba.SambaClientWrapper
+import com.darekbx.sambaclient.samba.SambaFile
+import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
+import com.darekbx.sambaclient.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import com.darekbx.sambaclient.util.setDateTime
 import com.darekbx.sambaclient.util.setFileSize

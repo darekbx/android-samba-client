@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.darekbx.sambaclient.databinding.AdapterUploadStateBinding
-import com.darekbx.sambaclient.ui.viewmodel.model.FileUploadState
+import com.darekbx.sambaclient.viewmodel.model.FileUploadState
 
 class UploadStateAdapter :
     RecyclerView.Adapter<UploadStateAdapter.BindingViewHolder>() {

@@ -1,4 +1,4 @@
-package com.darekbx.sambaclient.ui.viewmodel
+package com.darekbx.sambaclient.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

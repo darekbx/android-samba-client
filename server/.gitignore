@@ -1,2 +1,4 @@
 .md5_auth_token
 .share_path
+.ip_whitelist
+.server_run

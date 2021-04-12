@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.darekbx.sambaclient.BR
-import com.darekbx.sambaclient.ui.samba.SambaFile
+import com.darekbx.sambaclient.samba.SambaFile
 
 abstract class SambaFileListAdapter<T: ViewDataBinding> : BaseSambaFileAdapter() {
 

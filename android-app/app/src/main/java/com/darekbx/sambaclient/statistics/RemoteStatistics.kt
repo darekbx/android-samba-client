@@ -1,4 +1,4 @@
-package com.darekbx.sambaclient.ui.statistics
+package com.darekbx.sambaclient.statistics
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

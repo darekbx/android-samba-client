@@ -1,10 +1,10 @@
-package com.darekbx.sambaclient.ui.viewmodel
+package com.darekbx.sambaclient.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import com.darekbx.sambaclient.ui.statistics.RemoteStatistics
-import com.darekbx.sambaclient.ui.statistics.Statistics
-import com.darekbx.sambaclient.ui.statistics.SubDirStatistics
-import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
+import com.darekbx.sambaclient.statistics.RemoteStatistics
+import com.darekbx.sambaclient.statistics.Statistics
+import com.darekbx.sambaclient.statistics.SubDirStatistics
+import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
 
 class StatisticsViewModel(
     private val remoteStatistics: RemoteStatistics

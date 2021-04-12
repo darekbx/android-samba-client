@@ -1,10 +1,10 @@
-package com.darekbx.sambaclient.ui.viewmodel
+package com.darekbx.sambaclient.viewmodel
 
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.darekbx.sambaclient.TestCoroutineRule
-import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
+import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
 import com.darekbx.sambaclient.util.UriUtils
 import com.nhaarman.mockitokotlin2.*
 import junit.framework.TestCase

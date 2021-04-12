@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.AdapterSambaDirectoryBinding
-import com.darekbx.sambaclient.ui.samba.SambaFile
+import com.darekbx.sambaclient.samba.SambaFile
 
 class DirectorySelectAdapter(context: Context) :
     ArrayAdapter<SambaFile>(context, R.layout.adapter_samba_directory) {

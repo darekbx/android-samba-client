@@ -10,12 +10,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.FragmentMaintenanceBinding
-import com.darekbx.sambaclient.ui.statistics.Statistics
-import com.darekbx.sambaclient.ui.statistics.TypeStatistic
-import com.darekbx.sambaclient.ui.samba.Credentials
-import com.darekbx.sambaclient.ui.viewmodel.StatisticsViewModel
-import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
-import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
+import com.darekbx.sambaclient.statistics.Statistics
+import com.darekbx.sambaclient.statistics.TypeStatistic
+import com.darekbx.sambaclient.samba.Credentials
+import com.darekbx.sambaclient.viewmodel.StatisticsViewModel
+import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
+import com.darekbx.sambaclient.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import org.koin.android.viewmodel.ext.android.viewModel
 

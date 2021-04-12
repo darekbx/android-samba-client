@@ -3,7 +3,7 @@ package com.darekbx.sambaclient.ui.maintenance
 import android.content.Context
 import android.util.AttributeSet
 import com.darekbx.sambaclient.R
-import com.darekbx.sambaclient.ui.statistics.TypeStatistic
+import com.darekbx.sambaclient.statistics.TypeStatistic
 
 class CountPieChart(context: Context, attributeSet: AttributeSet?) :
     TypePieChart(context, attributeSet) {

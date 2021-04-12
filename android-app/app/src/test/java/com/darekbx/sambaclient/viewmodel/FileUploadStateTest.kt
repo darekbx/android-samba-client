@@ -1,6 +1,6 @@
-package com.darekbx.sambaclient.ui.viewmodel
+package com.darekbx.sambaclient.viewmodel
 
-import com.darekbx.sambaclient.ui.viewmodel.model.FileUploadState
+import com.darekbx.sambaclient.viewmodel.model.FileUploadState
 import com.nhaarman.mockitokotlin2.mock
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.assertFalse

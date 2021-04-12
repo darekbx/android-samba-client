@@ -1,4 +1,4 @@
-package com.darekbx.sambaclient.ui.viewmodel
+package com.darekbx.sambaclient.viewmodel
 
 import android.content.ContentResolver
 import android.os.Environment
@@ -6,12 +6,12 @@ import android.provider.MediaStore
 import androidx.core.content.contentValuesOf
 import androidx.lifecycle.*
 import com.darekbx.sambaclient.ui.explorer.SortingInfo
-import com.darekbx.sambaclient.ui.samba.Credentials
-import com.darekbx.sambaclient.ui.samba.SambaClientWrapper
-import com.darekbx.sambaclient.ui.samba.SambaFile
-import com.darekbx.sambaclient.ui.viewmodel.model.FileToUpload
-import com.darekbx.sambaclient.ui.viewmodel.model.FileUploadState
-import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
+import com.darekbx.sambaclient.samba.Credentials
+import com.darekbx.sambaclient.samba.SambaClientWrapper
+import com.darekbx.sambaclient.samba.SambaFile
+import com.darekbx.sambaclient.viewmodel.model.FileToUpload
+import com.darekbx.sambaclient.viewmodel.model.FileUploadState
+import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
 import kotlinx.coroutines.delay
 import java.io.IOException
 import java.util.*

@@ -18,8 +18,8 @@ import com.darekbx.sambaclient.BuildConfig
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.FragmentAuthenticationBinding
 import com.darekbx.sambaclient.preferences.AuthPreferences
-import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
-import com.darekbx.sambaclient.ui.viewmodel.SambaViewModel
+import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
+import com.darekbx.sambaclient.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.PermissionRequester
 import com.darekbx.sambaclient.util.WifiUtils
 import com.darekbx.sambaclient.util.observeOnViewLifecycle

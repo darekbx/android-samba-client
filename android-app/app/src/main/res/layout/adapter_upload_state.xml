@@ -7,7 +7,7 @@
 
         <variable
             name="uploadState"
-            type="com.darekbx.sambaclient.ui.viewmodel.model.FileUploadState" />
+            type="com.darekbx.sambaclient.viewmodel.model.FileUploadState" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

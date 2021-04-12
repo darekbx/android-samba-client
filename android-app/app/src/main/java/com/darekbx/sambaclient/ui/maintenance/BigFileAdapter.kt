@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.AdapterBigFileBinding
-import com.darekbx.sambaclient.ui.statistics.File
+import com.darekbx.sambaclient.statistics.File
 
 class BigFileAdapter(context: Context) : ArrayAdapter<File>(context, R.layout.adapter_big_file) {
 

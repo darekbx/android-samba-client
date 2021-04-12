@@ -1,4 +1,4 @@
-package com.darekbx.sambaclient.ui.samba
+package com.darekbx.sambaclient.samba
 
 import android.os.FileUtils
 import com.hierynomus.msdtyp.AccessMask

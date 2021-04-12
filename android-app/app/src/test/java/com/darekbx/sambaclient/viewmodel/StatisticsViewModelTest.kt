@@ -1,12 +1,12 @@
-package com.darekbx.sambaclient.ui.viewmodel
+package com.darekbx.sambaclient.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.darekbx.sambaclient.TestCoroutineRule
-import com.darekbx.sambaclient.ui.statistics.RemoteStatistics
-import com.darekbx.sambaclient.ui.statistics.Statistics
-import com.darekbx.sambaclient.ui.statistics.SubDirStatistics
-import com.darekbx.sambaclient.ui.viewmodel.model.ResultWrapper
+import com.darekbx.sambaclient.statistics.RemoteStatistics
+import com.darekbx.sambaclient.statistics.Statistics
+import com.darekbx.sambaclient.statistics.SubDirStatistics
+import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
 import com.nhaarman.mockitokotlin2.*
 import junit.framework.TestCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,7 +15,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import java.io.IOException
 
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)

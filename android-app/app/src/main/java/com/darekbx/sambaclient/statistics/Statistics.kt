@@ -1,4 +1,4 @@
-package com.darekbx.sambaclient.ui.statistics
+package com.darekbx.sambaclient.statistics
 
 class SubDirStatistics(
     val usedSpace: Long,

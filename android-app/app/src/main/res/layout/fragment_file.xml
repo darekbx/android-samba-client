@@ -29,7 +29,7 @@
         android:layout_weight="1"
         android:paddingEnd="@dimen/mediumPadding"
         android:paddingStart="@dimen/mediumPadding"
-        tools:text="notepad.txt" />
+        tools:text="notepad_notepad_notepad_notepad_notepad.txt" />
 
     <TextView
         android:id="@+id/file_location"

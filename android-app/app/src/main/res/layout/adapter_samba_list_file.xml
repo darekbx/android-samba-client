@@ -7,7 +7,7 @@
 
         <variable
             name="file"
-            type="com.darekbx.sambaclient.ui.samba.SambaFile" />
+            type="com.darekbx.sambaclient.samba.SambaFile" />
 
         <variable
             name="sambaFileClickListener"
