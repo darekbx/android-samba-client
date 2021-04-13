@@ -2,18 +2,21 @@ package com.darekbx.sambaclient
 
 import android.app.Application
 import android.content.Context
+import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.darekbx.sambaclient.preferences.AuthPreferences
+import com.darekbx.sambaclient.remoteaccess.RemoteAccess
 import com.darekbx.sambaclient.system.AndroidWifiManager
 import com.darekbx.sambaclient.statistics.RemoteStatistics
 import com.darekbx.sambaclient.samba.PathMovement
 import com.darekbx.sambaclient.samba.SambaClientWrapper
 import com.darekbx.sambaclient.viewmodel.StatisticsViewModel
-import com.darekbx.sambaclient.viewmodel.SambaViewModel
+import com.darekbx.sambaclient.viewmodel.SambaAccessViewModel
 import com.darekbx.sambaclient.viewmodel.UriViewModel
 import com.darekbx.sambaclient.util.UriUtils
 import com.darekbx.sambaclient.util.WifiUtils
+import com.darekbx.sambaclient.viewmodel.RemoteAccessViewModel
 import com.google.gson.Gson
 import com.hierynomus.smbj.SMBClient
 import org.koin.android.ext.koin.androidContext
@@ -26,7 +29,8 @@ class SambaClientApplication : Application() {
 
     private val commonModule = module {
         single { SMBClient() }
-        single { RemoteStatistics(BuildConfig.REMOTE_CONTROL_PORT) }
+        single { RemoteAccess(BuildConfig.REMOTE_ACCESS_PORT) }
+        single { RemoteStatistics(BuildConfig.MAINTENANCE_PORT) }
         single { SambaClientWrapper(get()) }
         single { AuthPreferences(get()) }
         single { PathMovement() }
@@ -48,7 +52,13 @@ class SambaClientApplication : Application() {
     }
 
     private val viewModelModule = module {
-        viewModel { SambaViewModel(get(), get()) }
+        viewModel {
+            if (true || shouldVerifyLocalNetwork() && !isInLocalNetwork(get())) {
+                RemoteAccessViewModel(get(), get())
+            } else {
+                SambaAccessViewModel(get(), get())
+            }
+        }
         viewModel { StatisticsViewModel(get()) }
         viewModel { UriViewModel(get()) }
     }
@@ -63,5 +73,20 @@ class SambaClientApplication : Application() {
             androidContext(this@SambaClientApplication)
             modules(commonModule, viewModelModule)
         }
+    }
+
+    private fun shouldVerifyLocalNetwork() = localNetworkSsid != null && localNetworkSsid != ""
+
+    private fun isInLocalNetwork(wifiUtils: WifiUtils): Boolean {
+        val connectedSsid = wifiUtils.connectedSsid()?.replace("\"", "")
+        return if (connectedSsid.isNullOrEmpty()) false
+        else localNetworkSsid == connectedSsid
+    }
+
+    private val localNetworkSsid: String?
+        get() = settingsPreferences.getString("local_network_ssid", null)
+
+    private val settingsPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(applicationContext)
     }
 }

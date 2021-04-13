@@ -1,7 +1,6 @@
 package com.darekbx.sambaclient.ui.authentication
 
 import android.Manifest
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.preference.PreferenceManager
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.darekbx.sambaclient.BuildConfig
@@ -19,10 +17,9 @@ import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.FragmentAuthenticationBinding
 import com.darekbx.sambaclient.preferences.AuthPreferences
 import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
-import com.darekbx.sambaclient.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.PermissionRequester
-import com.darekbx.sambaclient.util.WifiUtils
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
+import com.darekbx.sambaclient.viewmodel.BaseAccessViewModel
 import com.google.android.material.textfield.TextInputLayout
 import com.hierynomus.mssmb2.SMBApiException
 import org.koin.android.ext.android.inject
@@ -36,9 +33,8 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
         private const val AUTO_LOGIN_ENABLED = true
     }
 
-    private val sambaViewModel: SambaViewModel by sharedViewModel()
+    private val accessViewModel: BaseAccessViewModel by sharedViewModel()
     private val authPreferences: AuthPreferences by inject()
-    private val wifiUtils: WifiUtils by inject()
 
     private var _binding: FragmentAuthenticationBinding? = null
     private val binding get() = _binding!!
@@ -63,13 +59,7 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycle.addObserver(sambaViewModel)
-        with(sambaViewModel) {
-            observeOnViewLifecycle(isLoading) { showHideLoadingLayout(it) }
-            observeOnViewLifecycle(authenticationResult) { handleAuthenticationResult(it) }
-            observeOnViewLifecycle(diskShareResult) { handleShareNameResult(it) }
-            observeOnViewLifecycle(autoAuthenticationResult) { handleAutoAuthenticationResult(it) }
-        }
+        initializeViewModel()
 
         binding.authenticateButton.setOnClickListener {
             when (authenticated) {
@@ -83,18 +73,17 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
         }
     }
 
-    private fun initializeAuthentication() {
-        if (shouldVerifyLocalNetwork() && !isInLocalNetwork()) {
-            AlertDialog.Builder(requireContext())
-                .setMessage(R.string.app_name)
-                .setMessage(R.string.authentication_please_use_remote_access)
-                .setPositiveButton(R.string.button_ok) { _, _ ->
-                    activity?.finish()
-                }
-                .show()
-            return
+    private fun initializeViewModel() {
+        viewLifecycleOwner.lifecycle.addObserver(accessViewModel)
+        with(accessViewModel) {
+            observeOnViewLifecycle(isLoading) { showHideLoadingLayout(it) }
+            observeOnViewLifecycle(authenticationResult) { handleAuthenticationResult(it) }
+            observeOnViewLifecycle(diskShareResult) { handleShareNameResult(it) }
+            observeOnViewLifecycle(autoAuthenticationResult) { handleAutoAuthenticationResult(it) }
         }
+    }
 
+    private fun initializeAuthentication() {
         if (AUTO_LOGIN_ENABLED) {
             autoLogin()
         } else {
@@ -102,20 +91,12 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
         }
     }
 
-    private fun shouldVerifyLocalNetwork() = localNetworkSsid != null && localNetworkSsid != ""
-
-    private fun isInLocalNetwork(): Boolean {
-        val connectedSsid = wifiUtils.connectedSsid()?.replace("\"", "")
-        return if (connectedSsid.isNullOrEmpty()) false
-        else localNetworkSsid == connectedSsid
-    }
-
     private fun autoLogin() {
         val credentials = authPreferences.read()
         val shareName = authPreferences.readShareName()
         if (credentials.arePersisted && shareName != null) {
             with(credentials) {
-                sambaViewModel.authenticate(address!!, user, password, shareName)
+                accessViewModel.authenticate(address!!, user, password, shareName)
             }
         }
     }
@@ -127,7 +108,7 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
         val server = binding.authenticationAddress.getSimpleText()
         val user = binding.authenticationUser.nullIfEmpty()
         val password = binding.authenticationPassword.nullIfEmpty()
-        sambaViewModel.authenticate(server!!, user, password)
+        accessViewModel.authenticate(server!!, user, password)
     }
 
     private fun useShareName() {
@@ -135,7 +116,7 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
         binding.shareNameStatusView.visibility = View.INVISIBLE
         if (!verifyField(binding.authenticationShareName, R.string.validation_share_name)) return
         val shareName = binding.authenticationShareName.getSimpleText()
-        sambaViewModel.connectToDiskShare(shareName!!)
+        accessViewModel.connectToDiskShare(shareName!!)
     }
 
     private fun handleShareNameResult(result: ResultWrapper<Boolean>) {
@@ -324,12 +305,5 @@ class AuthenticationFragment : Fragment(R.layout.fragment_authentication) {
     private fun showDeniedPermissionInformation() {
         Toast.makeText(requireContext(), R.string.location_permission_denied, Toast.LENGTH_SHORT)
             .show()
-    }
-
-    private val localNetworkSsid: String?
-        get() = settingsPreferences.getString("local_network_ssid", null)
-
-    private val settingsPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(requireContext())
     }
 }

@@ -21,8 +21,8 @@ import com.darekbx.sambaclient.ui.explorer.SortingInfo.Companion.toSortingInfo
 import com.darekbx.sambaclient.samba.PathMovement
 import com.darekbx.sambaclient.samba.SambaFile
 import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
-import com.darekbx.sambaclient.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
+import com.darekbx.sambaclient.viewmodel.BaseAccessViewModel
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -34,7 +34,7 @@ class FileExplorerFragment :
         const val FILE_PATH_KEY = "83RcSgXp"
     }
 
-    private val sambaViewModel: SambaViewModel by viewModel()
+    private val accessViewModel: BaseAccessViewModel by viewModel()
     private val pathMovement: PathMovement by inject()
 
     private var _binding: FragmentFileExplorerBinding? = null
@@ -85,11 +85,11 @@ class FileExplorerFragment :
 
         initializeList(context)
 
-        observeOnViewLifecycle(sambaViewModel.isLoading) { showHideLoadingLayout(it) }
-        observeOnViewLifecycle(sambaViewModel.listResult) { handleListResult(it) }
-        observeOnViewLifecycle(sambaViewModel.directoryCreateResult) { handleCreateDirResult(it) }
+        observeOnViewLifecycle(accessViewModel.isLoading) { showHideLoadingLayout(it) }
+        observeOnViewLifecycle(accessViewModel.listResult) { handleListResult(it) }
+        observeOnViewLifecycle(accessViewModel.directoryCreateResult) { handleCreateDirResult(it) }
 
-        sambaViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
+        accessViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
 
         binding.buttonAdd.setOnClickListener { openCreateDirectoryDialog() }
         binding.root.addDrawerListener(this)
@@ -138,7 +138,7 @@ class FileExplorerFragment :
         dialog.arguments = sortingInfo.toBundle()
         dialog.onSortingInfo = {
             sortingInfo = this
-            sambaViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
+            accessViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
         }
         dialog.show(childFragmentManager, SortingDialog::class.simpleName)
     }
@@ -147,7 +147,7 @@ class FileExplorerFragment :
         val dialog = CreateDirectoryDialog()
         dialog.arguments = sortingInfo.toBundle()
         dialog.onCreate = { directoryName ->
-            sambaViewModel.createDirectory(pathMovement.currentPath(), directoryName)
+            accessViewModel.createDirectory(pathMovement.currentPath(), directoryName)
         }
         dialog.show(childFragmentManager, CreateDirectoryDialog::class.simpleName)
     }
@@ -172,7 +172,7 @@ class FileExplorerFragment :
                 .show()
         } else {
             // Refresh after dir creation
-            sambaViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
+            accessViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
         }
     }
 
@@ -201,14 +201,14 @@ class FileExplorerFragment :
     private fun goUp(): Boolean {
         if (pathMovement.depth() == 0) return false
         pathMovement.removeLastPathSegment()
-        sambaViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
+        accessViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
         return true
     }
 
     private fun openDirectory(directory: String?) {
         if (directory != null) {
             val path = pathMovement.obtainPath(directory)
-            sambaViewModel.listDirectory(sortingInfo, path)
+            accessViewModel.listDirectory(sortingInfo, path)
         }
     }
 

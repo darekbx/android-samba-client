@@ -15,8 +15,8 @@ import com.darekbx.sambaclient.statistics.TypeStatistic
 import com.darekbx.sambaclient.samba.Credentials
 import com.darekbx.sambaclient.viewmodel.StatisticsViewModel
 import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
-import com.darekbx.sambaclient.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
+import com.darekbx.sambaclient.viewmodel.BaseAccessViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
 /**
@@ -26,7 +26,7 @@ import org.koin.android.viewmodel.ext.android.viewModel
  */
 class MaintenanceFragment: Fragment() {
 
-    private val sambaViewModel: SambaViewModel by viewModel()
+    private val accessViewModel: BaseAccessViewModel by viewModel()
     private val statisticsViewModel: StatisticsViewModel by viewModel()
 
     private var _binding: FragmentMaintenanceBinding? = null
@@ -49,7 +49,7 @@ class MaintenanceFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(sambaViewModel) {
+        with(accessViewModel) {
             observeOnViewLifecycle(isLoading) { showHideLoadingLayout(it) }
             observeOnViewLifecycle(credentialsResult) { handleMd5Credentials(it) }
 

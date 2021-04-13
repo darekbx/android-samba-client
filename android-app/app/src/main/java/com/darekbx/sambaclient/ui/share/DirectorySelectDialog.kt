@@ -11,15 +11,15 @@ import com.darekbx.sambaclient.databinding.DialogDirectorySelectBinding
 import com.darekbx.sambaclient.ui.explorer.SortingInfo
 import com.darekbx.sambaclient.samba.PathMovement
 import com.darekbx.sambaclient.samba.SambaFile
+import com.darekbx.sambaclient.viewmodel.BaseAccessViewModel
 import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
-import com.darekbx.sambaclient.viewmodel.SambaViewModel
 import org.koin.android.ext.android.inject
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class DirectorySelectDialog : DialogFragment() {
 
     private val pathMovement: PathMovement by inject()
-    private val sambaViewModel: SambaViewModel by viewModel()
+    private val accessViewModel: BaseAccessViewModel by viewModel()
 
     private var _binding: DialogDirectorySelectBinding? = null
     private val binding get() = _binding!!
@@ -38,12 +38,12 @@ class DirectorySelectDialog : DialogFragment() {
 
         initializeList()
 
-        with(sambaViewModel) {
+        with(accessViewModel) {
             isLoading.observe(this@DirectorySelectDialog) { showHideLoadingLayout(it) }
             listResult.observe(this@DirectorySelectDialog) { handleListResult(it) }
         }
 
-        sambaViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
+        accessViewModel.listDirectory(sortingInfo, pathMovement.currentPath())
 
         return dialog
     }
@@ -80,7 +80,7 @@ class DirectorySelectDialog : DialogFragment() {
     private fun openDirectory(directory: String?) {
         if (directory != null) {
             val path = pathMovement.obtainPath(directory)
-            sambaViewModel.listDirectory(sortingInfo, path)
+            accessViewModel.listDirectory(sortingInfo, path)
         }
     }
 

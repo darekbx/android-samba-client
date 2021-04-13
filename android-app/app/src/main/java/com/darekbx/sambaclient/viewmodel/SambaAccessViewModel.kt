@@ -4,40 +4,30 @@ import android.content.ContentResolver
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.contentValuesOf
-import androidx.lifecycle.*
 import com.darekbx.sambaclient.ui.explorer.SortingInfo
 import com.darekbx.sambaclient.samba.Credentials
 import com.darekbx.sambaclient.samba.SambaClientWrapper
-import com.darekbx.sambaclient.samba.SambaFile
 import com.darekbx.sambaclient.viewmodel.model.FileToUpload
 import com.darekbx.sambaclient.viewmodel.model.FileUploadState
 import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
 import kotlinx.coroutines.delay
 import java.io.IOException
-import java.util.*
 
-class SambaViewModel(
+class SambaAccessViewModel(
     private val sambaClientWrapper: SambaClientWrapper,
-    private val contentResolver: ContentResolver
-) : LoadingViewModel(), LifecycleObserver {
+    private val contentResolver: ContentResolver,
+) : BaseAccessViewModel() {
 
     companion object {
         private const val UPLOAD_ACTION_DELAY = 500L
     }
 
-    val authenticationResult = MutableLiveData<ResultWrapper<Boolean>>()
-    val autoAuthenticationResult = MutableLiveData<ResultWrapper<Boolean>>()
-    val diskShareResult = MutableLiveData<ResultWrapper<Boolean>>()
-    val listResult = MutableLiveData<ResultWrapper<List<SambaFile>>>()
-    val fileInfoResult = MutableLiveData<ResultWrapper<SambaFile>>()
-    val fileDownloadResult = MutableLiveData<ResultWrapper<String>>()
-    val fileDeleteResult = MutableLiveData<ResultWrapper<Boolean>>()
-    val directoryCreateResult = MutableLiveData<ResultWrapper<Boolean>>()
-    val credentialsResult = MutableLiveData<ResultWrapper<Credentials>>()
-    val fileUploadState = MutableLiveData<FileUploadState>()
-    val fileUploadCompleted = MutableLiveData<Boolean>()
-
-    fun authenticate(server: String, user: String? = null, password: String? = null, shareName: String) {
+    override fun authenticate(
+        server: String,
+        user: String?,
+        password: String?,
+        shareName: String
+    ) {
         runIOInViewModelScope {
             try {
                 sambaClientWrapper.authenticate(server, user, password, shareName)
@@ -49,7 +39,7 @@ class SambaViewModel(
         }
     }
 
-    fun authenticate(server: String, user: String? = null, password: String? = null) {
+    override fun authenticate(server: String, user: String?, password: String?) {
         runIOInViewModelScope {
             try {
                 sambaClientWrapper.authenticate(server, user, password)
@@ -61,7 +51,7 @@ class SambaViewModel(
         }
     }
 
-    fun generateCredentialsMd5() {
+    override fun generateCredentialsMd5() {
         runIOInViewModelScope {
             try {
                 val hostName = sambaClientWrapper.hostName()
@@ -75,7 +65,7 @@ class SambaViewModel(
         }
     }
 
-    fun connectToDiskShare(shareName: String) {
+    override fun connectToDiskShare(shareName: String) {
         runIOInViewModelScope {
             try {
                 sambaClientWrapper.connectToDiskShare(shareName)
@@ -87,7 +77,7 @@ class SambaViewModel(
         }
     }
 
-    fun listDirectory(sortingInfo: SortingInfo, directory: String = "") {
+    override fun listDirectory(sortingInfo: SortingInfo, directory: String) {
         runIOInViewModelScope {
             try {
                 val list = sambaClientWrapper.list(directory)
@@ -101,7 +91,7 @@ class SambaViewModel(
         }
     }
 
-    fun fileInfo(path: String) {
+    override fun fileInfo(path: String) {
         runIOInViewModelScope {
             try {
                 val fileInfo = sambaClientWrapper.fileInformation(path)
@@ -113,7 +103,7 @@ class SambaViewModel(
         }
     }
 
-    fun downloadFile(path: String) {
+    override fun downloadFile(path: String) {
         val outFile = path.substringAfterLast(SambaClientWrapper.PATH_DELIMITER)
         val contentValues = contentValuesOf(
             MediaStore.Downloads.DISPLAY_NAME to outFile,
@@ -137,7 +127,7 @@ class SambaViewModel(
         }
     }
 
-    fun deleteFile(path: String) {
+    override fun deleteFile(path: String) {
         runIOInViewModelScope {
             try {
                 sambaClientWrapper.fileDelete(path)
@@ -149,7 +139,7 @@ class SambaViewModel(
         }
     }
 
-    fun createDirectory(path: String, directoryName: String) {
+    override fun createDirectory(path: String, directoryName: String) {
         runIOInViewModelScope {
             try {
                 sambaClientWrapper.createDirectory(path, directoryName)
@@ -161,7 +151,7 @@ class SambaViewModel(
         }
     }
 
-    fun uploadFiles(dirToUpload: String, filesToUpload: List<FileToUpload>) {
+    override fun uploadFiles(dirToUpload: String, filesToUpload: List<FileToUpload>) {
         runIOInViewModelScope {
             for (fileToUpload in filesToUpload) {
                 try {
@@ -182,23 +172,6 @@ class SambaViewModel(
             }
             fileUploadCompleted.postValue(true)
         }
-    }
-
-    private fun createComparator(sortingInfo: SortingInfo): Comparator<SambaFile> {
-        return compareByDescending<SambaFile> { it.isUpMark }
-            .thenByDescending { it.isDirectory }
-            .run {
-                when (sortingInfo.isByName) {
-                    true -> when (sortingInfo.isAscending) {
-                        true -> thenBy { it.name.toLowerCase(Locale.getDefault()) }
-                        else -> thenByDescending { it.name.toLowerCase(Locale.getDefault()) }
-                    }
-                    else -> when (sortingInfo.isAscending) {
-                        true -> thenBy { it.changeTime }
-                        else -> thenByDescending { it.changeTime }
-                    }
-                }
-            }
     }
 
     private fun dispose() {

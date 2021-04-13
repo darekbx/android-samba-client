@@ -6,7 +6,6 @@ from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from remote_access import RemoteAccess
-from remote_access_db import RemoteAccessDB
 
 logging.basicConfig(
     format = "%(levelname) -10s %(asctime)s %(message)s",
@@ -39,9 +38,9 @@ Endpoints:
 '''
 class RemoteAccessServer(BaseHTTPRequestHandler):
 
-    SHARE_PATH = ".share_path"
-    TOKEN_PATH = ".md5_auth_token"
-    IP_WHITELIST_PATH = ".ip_whitelist"
+    SHARE_PATH = "{}.share_path".format(os.environ["SHARE_PATH"])
+    TOKEN_PATH = "{}.md5_auth_token".format(os.environ["SHARE_PATH"])
+    IP_WHITELIST_PATH = "{}.ip_whitelist".format(os.environ["SHARE_PATH"])
 
     ENDPOINTS = {
         'authenticate': '/authenticate',
@@ -137,6 +136,8 @@ class RemoteAccessServer(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
         self.end_headers()
+        response = json.dumps({ "authorized": "True" })
+        self.wfile.write(response.encode())
 
     def _save_push_token(self, token):
         db = RemoteAccessDB()

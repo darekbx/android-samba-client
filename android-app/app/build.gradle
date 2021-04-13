@@ -26,7 +26,8 @@ android {
         debug {
             buildConfigField 'boolean', 'SHOW_AS_LIST', "true"
             buildConfigField 'int', 'GRID_COLUMNS_COUNT', "4"
-            buildConfigField 'int', 'REMOTE_CONTROL_PORT', "8099"
+            buildConfigField 'int', 'MAINTENANCE_PORT', "8099"
+            buildConfigField 'int', 'REMOTE_ACCESS_PORT', "8098"
         }
     }
     

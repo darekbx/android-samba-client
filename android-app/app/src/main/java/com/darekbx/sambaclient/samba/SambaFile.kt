@@ -12,13 +12,23 @@ class SambaFile(
     private val attributes: Long
 ) {
 
-    val isDirectory = attributes == FileAttributes.FILE_ATTRIBUTE_DIRECTORY.value
-    val isUpMark = name == "." || name == ".."
+    val isDirectory: Boolean
+        get() {
+            return attributes == FileAttributes.FILE_ATTRIBUTE_DIRECTORY.value
+        }
 
-    val icon = when (File(name).extension.toLowerCase()) {
-        "jpg", "png", "jpeg", "bmp", "svg", "gif" -> R.drawable.ic_file_image
-        "doc", "docx", "txt", "rtf", "xlx", "xlxs", "ppt", "ppts", "pdf" -> R.drawable.ic_text_file
-        "zip", "gz", "rar", "tar", "7z" -> R.drawable.ic_archive_file
-        else -> R.drawable.ic_common_file
-    }
+    val isUpMark: Boolean
+        get() {
+            return name == "." || name == ".."
+        }
+
+    val icon: Int
+        get() {
+            return when (File(name).extension.toLowerCase()) {
+                "jpg", "png", "jpeg", "bmp", "svg", "gif" -> R.drawable.ic_file_image
+                "doc", "docx", "txt", "rtf", "xlx", "xlxs", "ppt", "ppts", "pdf" -> R.drawable.ic_text_file
+                "zip", "gz", "rar", "tar", "7z" -> R.drawable.ic_archive_file
+                else -> R.drawable.ic_common_file
+            }
+        }
 }

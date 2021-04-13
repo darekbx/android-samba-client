@@ -15,16 +15,16 @@ import com.darekbx.sambaclient.databinding.FragmentFileBinding
 import com.darekbx.sambaclient.samba.SambaClientWrapper
 import com.darekbx.sambaclient.samba.SambaFile
 import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
-import com.darekbx.sambaclient.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import com.darekbx.sambaclient.util.setDateTime
 import com.darekbx.sambaclient.util.setFileSize
 import com.darekbx.sambaclient.util.setImage
+import com.darekbx.sambaclient.viewmodel.BaseAccessViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class FileFragment : Fragment(R.layout.fragment_file) {
 
-    private val sambaViewModel: SambaViewModel by viewModel()
+    private val accessViewModel: BaseAccessViewModel by viewModel()
 
     private var _binding: FragmentFileBinding? = null
     private val binding get() = _binding!!
@@ -48,13 +48,13 @@ class FileFragment : Fragment(R.layout.fragment_file) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeOnViewLifecycle(sambaViewModel.isLoading) { showHideLoadingLayout(it) }
-        observeOnViewLifecycle(sambaViewModel.fileInfoResult) { handleFileInfoResult(it) }
-        observeOnViewLifecycle(sambaViewModel.fileDownloadResult) { handleFileDownloadResult(it) }
-        observeOnViewLifecycle(sambaViewModel.fileDeleteResult) { handleFileDeleteResult(it) }
+        observeOnViewLifecycle(accessViewModel.isLoading) { showHideLoadingLayout(it) }
+        observeOnViewLifecycle(accessViewModel.fileInfoResult) { handleFileInfoResult(it) }
+        observeOnViewLifecycle(accessViewModel.fileDownloadResult) { handleFileDownloadResult(it) }
+        observeOnViewLifecycle(accessViewModel.fileDeleteResult) { handleFileDeleteResult(it) }
 
         getFilePathArgument()?.let { filePath ->
-            sambaViewModel.fileInfo(filePath)
+            accessViewModel.fileInfo(filePath)
         }
 
         handleEvents()
@@ -66,13 +66,13 @@ class FileFragment : Fragment(R.layout.fragment_file) {
                 if (downloadedFile != null) {
                     openFile(downloadedFile)
                 } else {
-                    sambaViewModel.downloadFile(filePath)
+                    accessViewModel.downloadFile(filePath)
                 }
             }
         }
         binding.deleteFile.setOnClickListener {
             getFilePathArgument()?.let { filePath ->
-                sambaViewModel.deleteFile(filePath)
+                accessViewModel.deleteFile(filePath)
             }
         }
     }

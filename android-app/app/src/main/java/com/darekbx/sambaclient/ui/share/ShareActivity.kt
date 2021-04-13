@@ -22,7 +22,7 @@ class ShareActivity : AppCompatActivity() {
         private const val UPLOAD_DELAY = 1000L
     }
 
-    private val sambaViewModel: SambaViewModel by viewModel()
+    private val accessViewModel: BaseAccessViewModel by viewModel()
     private val authPreferences: AuthPreferences by inject()
     private val uriViewModel: UriViewModel by viewModel()
 
@@ -38,8 +38,8 @@ class ShareActivity : AppCompatActivity() {
         _binding = ActivityShareBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        sambaViewModel.autoAuthenticationResult.observe(this, { handleAuthenticationResult(it) })
-        sambaViewModel.isLoading.observe(this, { showHideLoadingLayout(it) })
+        accessViewModel.autoAuthenticationResult.observe(this, { handleAuthenticationResult(it) })
+        accessViewModel.isLoading.observe(this, { showHideLoadingLayout(it) })
         uriViewModel.fileNames.observe(this) { handleFileNamesResult(it) }
 
         autoLogin()
@@ -55,7 +55,7 @@ class ShareActivity : AppCompatActivity() {
         val shareName = authPreferences.readShareName()
         if (credentials.arePersisted && shareName != null) {
             with(credentials) {
-                sambaViewModel.authenticate(address!!, user, password, shareName)
+                accessViewModel.authenticate(address!!, user, password, shareName)
             }
         } else {
             displayError(getString(R.string.share_auth_error))
@@ -122,13 +122,13 @@ class ShareActivity : AppCompatActivity() {
         val filesToUpload = fileNamesMap.map { FileToUpload(it.key, it.value) }
         uploadDialog.addStates(filesToUpload)
 
-        sambaViewModel.fileUploadState.observe(this, { uploadDialog.updateState(it) })
-        sambaViewModel.fileUploadCompleted.observe(this, { uploadDialog.notifyUploadCompleted() })
+        accessViewModel.fileUploadState.observe(this, { uploadDialog.updateState(it) })
+        accessViewModel.fileUploadCompleted.observe(this, { uploadDialog.notifyUploadCompleted() })
 
         CoroutineScope(Dispatchers.IO).launch {
             delay(UPLOAD_DELAY)
             withContext(Dispatchers.Main) {
-                sambaViewModel.uploadFiles(selectedPath, filesToUpload)
+                accessViewModel.uploadFiles(selectedPath, filesToUpload)
             }
         }
     }

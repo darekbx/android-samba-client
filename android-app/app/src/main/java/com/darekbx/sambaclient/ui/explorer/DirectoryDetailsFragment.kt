@@ -11,11 +11,11 @@ import com.darekbx.sambaclient.R
 import com.darekbx.sambaclient.databinding.FragmentDirectoryDetailsBinding
 import com.darekbx.sambaclient.samba.Credentials
 import com.darekbx.sambaclient.statistics.SubDirStatistics
-import com.darekbx.sambaclient.viewmodel.SambaViewModel
 import com.darekbx.sambaclient.viewmodel.StatisticsViewModel
 import com.darekbx.sambaclient.viewmodel.model.ResultWrapper
 import com.darekbx.sambaclient.util.observeOnViewLifecycle
 import com.darekbx.sambaclient.util.setDateTime
+import com.darekbx.sambaclient.viewmodel.BaseAccessViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class DirectoryDetailsFragment : Fragment(R.layout.fragment_directory_details) {
@@ -24,7 +24,7 @@ class DirectoryDetailsFragment : Fragment(R.layout.fragment_directory_details) {
         private const val LOADING_HIDE_DELAY = 1000L
     }
 
-    private val sambaViewModel: SambaViewModel by viewModel()
+    private val accessViewModel: BaseAccessViewModel by viewModel()
     private val statisticsViewModel: StatisticsViewModel by viewModel()
 
     private var _binding: FragmentDirectoryDetailsBinding? = null
@@ -49,7 +49,7 @@ class DirectoryDetailsFragment : Fragment(R.layout.fragment_directory_details) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(sambaViewModel) {
+        with(accessViewModel) {
             observeOnViewLifecycle(isLoading) { showHideLoadingLayout(it) }
             observeOnViewLifecycle(credentialsResult) { handleMd5Credentials(it) }
         }
@@ -87,7 +87,7 @@ class DirectoryDetailsFragment : Fragment(R.layout.fragment_directory_details) {
 
     fun loadDetailsForDirectory(directory: String) {
         clear()
-        sambaViewModel.generateCredentialsMd5()
+        accessViewModel.generateCredentialsMd5()
         subDir = directory
     }
 

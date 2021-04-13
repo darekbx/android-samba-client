@@ -12,7 +12,7 @@ Samba Maintenence server, endpoints:
 """
 class MaintenanceServer(BaseHTTPRequestHandler):
 
-    TOKEN_PATH = ".md5_auth_token"
+    TOKEN_PATH = "{}.md5_auth_token".format(os.environ["SHARE_PATH"])
     STATISTICS_PATH = "/statistics"
 
     _maintenence = Maintenence()

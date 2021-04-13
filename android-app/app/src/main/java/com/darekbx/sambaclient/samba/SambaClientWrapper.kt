@@ -1,6 +1,7 @@
 package com.darekbx.sambaclient.samba
 
 import android.os.FileUtils
+import com.darekbx.sambaclient.util.toMd5
 import com.hierynomus.msdtyp.AccessMask
 import com.hierynomus.msfscc.FileAttributes
 import com.hierynomus.msfscc.fileinformation.FileAllInformation
@@ -56,9 +57,8 @@ class SambaClientWrapper(private val smbClient: SMBClient) {
     fun generateCredentialsMd5(): String {
         val authContext = _session?.authenticationContext
             ?: throw IllegalStateException("Authentication context is null")
-        val salt = "${authContext.username}_${String(authContext.password)}"
-        val md = MessageDigest.getInstance("MD5")
-        return BigInteger(1, md.digest(salt.toByteArray())).toString(16).padStart(32, '0')
+        val content = "${authContext.username}_${String(authContext.password)}"
+        return content.toMd5()
     }
 
     fun hostName() = _session?.connection?.remoteHostname
