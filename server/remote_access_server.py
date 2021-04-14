@@ -1,7 +1,7 @@
 import os
 import json
 import logging
-from pathlib import Path
+import shutil
 from urllib.parse import urlparse, parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -14,37 +14,23 @@ logging.basicConfig(
 '''
 TODO:
  - Heroku, check how was made in GeoTracker
- - Add model definitions equals to SMBJ (SambaFile)
- - Security:
-   - https
-   - Samba App is generating md5 auth tokens
-
-Remote access to the Samba share.
-Share directory is defined in .share_path file and is given as a root for server.
 
 Endpoints:
- - For all endpoints:
-   - header: Md5Authorization: {md5(user_password)}
-   - header: Md5IPAuthorization: {md5(ip)}
- - [POST] /authenticate Just need to be invoked
- - [GET] /list?path={path to dir, eg dir/subdir} List files in dir, root is /
- - [GET] /file_details?path={path to file} Get details about file
- - [GET] /dir_details?path={path to dir} Get details about file
- - [GET] /delete?path={path to file} Deletes file by given path
- - [GET] /download?path={path to file} Download file by given path
- - [POST] /upload Upload single file
- - [POST] /create Create directory
+ - [POST] /file_upload Upload single file
+ - [POST] /dir_create Create directory
 
 '''
 class RemoteAccessServer(BaseHTTPRequestHandler):
 
-    SHARE_PATH = "{}.share_path".format(os.environ["SHARE_PATH"])
-    TOKEN_PATH = "{}.md5_auth_token".format(os.environ["SHARE_PATH"])
-    IP_WHITELIST_PATH = "{}.ip_whitelist".format(os.environ["SHARE_PATH"])
+    TOKEN_PATH = "{}.md5_auth_token".format(os.environ["SERVER_PATH"])
+    IP_WHITELIST_PATH = "{}.ip_whitelist".format(os.environ["SERVER_PATH"])
 
     ENDPOINTS = {
         'authenticate': '/authenticate',
-        'list': '/list'
+        'list': '/list',
+        'file_details': '/file_details',
+        'file_delete': '/file_delete',
+        'file_download': '/file_download'
     }
 
     _remote_access = RemoteAccess()
@@ -69,6 +55,12 @@ class RemoteAccessServer(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         if path == self.ENDPOINTS['list']:
             self._handle_list()
+        elif path == self.ENDPOINTS['file_details']:
+            self._handle_file_details()
+        elif path == self.ENDPOINTS['file_delete']:
+            self._handle_file_delete()
+        elif path == self.ENDPOINTS['file_download']:
+            self._handle_file_download()
         else:
             self._end_with_code(404)
 
@@ -97,39 +89,37 @@ class RemoteAccessServer(BaseHTTPRequestHandler):
             self._end_with_code(404)
     
     def _handle_list(self):
-        contents = []
-        dir_to_list = ""
-        query = parse_qs(urlparse(self.path).query)
-        if "path" in query:
-            dir_to_list = query["path"][0]
-        
-        dir_to_list = Path(os.path.join(self._read_share_path(), dir_to_list))
-        for item in os.listdir(dir_to_list):
-            item_full_path = os.path.join(dir_to_list, item)
-            if os.path.isfile(item_full_path):
-                # File
-                contents.append({
-                    "name": os.path.basename(item),
-                    "creationTime": round(os.path.getctime(item_full_path) * 1000),
-                    "changeTime": round(os.path.getmtime(item_full_path) * 1000),
-                    "size": os.path.getsize(item_full_path),
-                    "attributes": 0
-                })
-            else:
-                # Dir
-                contents.append({
-                    "name": os.path.basename(item),
-                    "creationTime": round(os.path.getctime(item_full_path) * 1000),
-                    "changeTime": round(os.path.getmtime(item_full_path) * 1000),
-                    "size": None,
-                    "attributes": 16
-                })
-
+        dir_to_list = self._get_path_from_query()
+        contents = self._remote_access.list_dir(dir_to_list)
         response = json.dumps(contents)
+        self._end_with_json(200, response)
+
+    def _handle_file_details(self):
+        file_path = self._get_path_from_query()
+        contents = self._remote_access.file_info(file_path)
+        response = json.dumps(contents)
+        self._end_with_json(200, response)
+
+    def _handle_file_delete(self):
+        file_path = self._get_path_from_query()
+        contents = self._remote_access.file_delete(file_path)
+        response = json.dumps(contents)
+        self._end_with_json(200, response)
+
+    def _handle_file_download(self):
+        file_path = self._get_path_from_query()
+        file_handle = self._remote_access.file_download(file_path)
+        file_name = os.path.basename(file_path)
+        fs = os.fstat(file_handle.fileno())
+
         self.send_response(200)
-        self.send_header('Content-type', 'application/json')
+        self.send_header("Content-Type", 'application/octet-stream')
+        self.send_header("Content-Disposition", 'attachment; filename="{}"'.format(file_name))
+        self.send_header("Content-Length", str(fs.st_size))
         self.end_headers()
-        self.wfile.write(response.encode())
+        shutil.copyfileobj(file_handle, self.wfile)
+
+        file_handle.close()
 
     def _handle_authenticate(self, post_data):
         self._was_authorized = True 
@@ -139,15 +129,22 @@ class RemoteAccessServer(BaseHTTPRequestHandler):
         response = json.dumps({ "authorized": "True" })
         self.wfile.write(response.encode())
 
-    def _save_push_token(self, token):
-        db = RemoteAccessDB()
-        db.connect()
-        db.save_token(token)
-        db.close()
-        
     def _end_with_code(self, code):
         self.send_response(code)
         self.end_headers()
+
+    def _end_with_json(self, code, json):
+        self.send_response(code)
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+        self.wfile.write(json.encode())
+
+    def _get_path_from_query(self):
+        file_path = ""
+        query = parse_qs(urlparse(self.path).query)
+        if "path" in query:
+            file_path = query["path"][0]
+        return file_path
     
     def _read_authentication_token(self):
         with open(self.TOKEN_PATH, "r") as handle:
@@ -155,10 +152,6 @@ class RemoteAccessServer(BaseHTTPRequestHandler):
 
     def _read_whitelisted_ip(self):
         with open(self.IP_WHITELIST_PATH, "r") as handle:
-            return handle.read().strip()
-
-    def _read_share_path(self):
-        with open(self.SHARE_PATH, "r") as handle:
             return handle.read().strip()
 
 def run(server_class=HTTPServer, handler_class=RemoteAccessServer, port = ""):

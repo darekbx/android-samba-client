@@ -15,7 +15,7 @@ import java.io.IOException
 
 class SambaAccessViewModel(
     private val sambaClientWrapper: SambaClientWrapper,
-    private val contentResolver: ContentResolver,
+    private val contentResolver: ContentResolver
 ) : BaseAccessViewModel() {
 
     companion object {

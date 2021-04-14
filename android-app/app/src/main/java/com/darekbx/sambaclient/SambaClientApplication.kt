@@ -2,6 +2,7 @@ package com.darekbx.sambaclient
 
 import android.app.Application
 import android.content.Context
+import android.widget.Toast
 import androidx.preference.PreferenceManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
@@ -54,13 +55,19 @@ class SambaClientApplication : Application() {
     private val viewModelModule = module {
         viewModel {
             if (true || shouldVerifyLocalNetwork() && !isInLocalNetwork(get())) {
-                RemoteAccessViewModel(get(), get())
+                showToast(R.string.application_is_using_remote_access)
+                RemoteAccessViewModel(get(), get(), get())
             } else {
+                showToast(R.string.application_is_using_samba)
                 SambaAccessViewModel(get(), get())
             }
         }
         viewModel { StatisticsViewModel(get()) }
         viewModel { UriViewModel(get()) }
+    }
+
+    private fun showToast(messageId: Int) {
+        Toast.makeText(applicationContext, messageId, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreate() {

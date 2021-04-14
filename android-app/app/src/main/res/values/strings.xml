@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Samba Client</string>
     <string name="logo_text">smb</string>
+    <string name="application_is_using_samba">Application is using Samba</string>
+    <string name="application_is_using_remote_access">Application is using Remote Access</string>
 
     <string name="authenticate_button">Authenticate</string>
 
