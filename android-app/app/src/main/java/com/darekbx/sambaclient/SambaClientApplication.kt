@@ -28,6 +28,10 @@ import org.koin.dsl.module
 
 class SambaClientApplication : Application() {
 
+    companion object {
+        private const val USE_ONLY_SAMBA = true
+    }
+
     private val commonModule = module {
         single { SMBClient() }
         single { RemoteAccess(BuildConfig.REMOTE_ACCESS_PORT) }
@@ -54,11 +58,10 @@ class SambaClientApplication : Application() {
 
     private val viewModelModule = module {
         viewModel {
-            if (true || shouldVerifyLocalNetwork() && !isInLocalNetwork(get())) {
+            if (!USE_ONLY_SAMBA && shouldVerifyLocalNetwork() && !isInLocalNetwork(get())) {
                 showToast(R.string.application_is_using_remote_access)
                 RemoteAccessViewModel(get(), get(), get())
             } else {
-                showToast(R.string.application_is_using_samba)
                 SambaAccessViewModel(get(), get())
             }
         }
